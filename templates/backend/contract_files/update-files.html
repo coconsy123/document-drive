@@ -1,0 +1,524 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% load tags %}
+{% block body %}
+{% document_type as document_type %}
+{% category_type as category_type %}
+{% division_type as division_type %}
+<div class="col-sm-12 col-xl-12">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <h5>View Files</h5>
+                    <div class="d-flex justify-content-end">
+                        {% if data.status == 'Pending' %}
+                            <button class="btn btn-sm btn-danger" title="Reviewed" onClick="fileReviewed('{{ data.id }}');">Reviewed</button>
+                            &nbsp;
+                            <button class="btn btn-sm btn-warning" title="Archived" onClick="fileArchived('{{ data.id }}');">Archived</button>
+                        {% else %}
+                            {% if data.status != 'Archived' %}
+                                {% if data.status == 'Completed' %}
+                                    {% if data.is_archivable %}
+                                        <button class="btn btn-sm btn-warning" title="Archived" onClick="fileArchived('{{ data.id }}');">Archived</button>
+                                    {% else %}
+                                        <!-- Display the remaining time until the file can be archived -->
+                                        <span>Archivable in {{ data.time_until_archivable|format_timedelta }}</span>
+                                    {% endif %}
+                                {% elif data.status == 'Reviewed' %}
+                                    <button class="btn btn-sm btn-success" onClick="fileCompleted('{{ data.id }}')"  title="Completed">Completed</button>
+                                    &nbsp;
+                                {% endif %}
+                            {% endif %}
+                        {% endif %} 
+                    </div>
+                 </div>
+                    <!-- Add this modal markup to your HTML -->
+                <div class="modal fade" id="completedModal" tabindex="-1" role="dialog" aria-labelledby="completedModalLabel"  aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="completedModalLabel">Set Completion Date</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="begin-date-completed" class="col-form-label">Begin Date Completed:</label>
+                                    <input type="date" class="form-control" id="begin-date-completed">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onClick="submitCompleted('{{ data.id }}')">Save Changes</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+  
+                <div class="card-body">
+                    <h6>File Details</h6>
+                    <form class="theme-form mega-form" method="POST" enctype="multipart/form-data" action="{% url 'backend-contract-files-page' action='update-file' pk=data.id %}" id="updateProjectForm">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="col-form-label">Title <span class="text-danger">*</span></label>
+                            <input class="form-control f-w-900 text-dark" type="text" name="title" placeholder="Enter project title" value="{{ data.title }}" oninput="this.value = this.value.toUpperCase()" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="col-form-label">Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control f-w-900 text-dark" rows="8" name="description" placeholder="Enter project description" required>{{ data.description }}</textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="mb-3">
+                                    <label>Division Type <span class="text-danger">*</span></label>
+                                    <select class="form-control select" id="division_type" name="division_type_id" required>
+                                        {% for row in division_type %}
+                                            <option value="{{ row.id }}" {% if row.id == data.division_type_id %}selected{% endif %}>{{ row.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="mb-3">
+                                    <label>Category Type <span class="text-danger">*</span></label>
+                                    <select class="form-control select" id="category_type" name="category_type_id" required>
+                                        {% for row in category_type %}
+                                            <option value="{{ row.id }}" {% if row.id == data.category_type_id %}selected{% endif %}>{{ row.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="col-form-label">Status<span></span></label>
+                                <input class="form-control f-w-900 text-{% status_color data.status %}" type="text" name="status" id="status" value="{{ data.status }}" readonly>    
+                            </div>
+                            <div class="mb-3">
+                                <label class="col-form-label">Remarks <span class="text-danger"></span></label>
+                                <textarea class="form-control f-w-900 text-dark" rows="8" name="remarks" placeholder="Enter remarks">{{ data.remarks }}</textarea>
+                            </div>
+                        </div>
+                         <div class="d-flex justify-content-end">
+                            {% if request.user == data.created_by %}
+                            <button class="btn btn-sm btn-primary btn-air-primary p-2 update-project" type="submit">Save Changes</button>&nbsp;
+                            {% endif %}
+                         </div>
+                    </form>
+                    <hr>
+                    <ul id="attachments_body">
+                        <div class="d-flex justify-content-between">
+                            <h6>Document Type</h6>
+                            <button class="btn btn-sm btn-primary btn-air-primary mb-2 p-2" data-bs-target="#addAttachmentModal" data-bs-toggle="modal">Add Document</button>
+                        </div>
+                        <table class="table table-bordered table-hover table-condensed" id="attachments-tbl">
+                            <thead>
+                                <tr class="text-uppercase">
+                                    <th>Document Type</th>
+                                    <th>Document Name</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in data.document_type %}
+                                    <tr>
+                                        <td>{{ row.document_type.name }}</td>
+                                        <td>{{ row.file_directory|remove_documents_prefix }}</td>
+                                        <td style="text-align: center;" class="upper"><a class="cursor-pointer badge badge-primary" href="{{ row.file_directory }}" target="_blank">VIEW</a> |<a class="cursor-pointer badge badge-danger" title="Remove" onClick="deleteFile('{{row.id}}')">REMOVE</a></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addAttachmentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+       <div class="modal-content">
+          <div class="modal-header">
+             <h5 class="modal-title">Add Document</h5>
+             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="addAttachmentBody">
+             <form id="addAttachmentForm" method="POST" action="{% url 'backend-contract-files-page' action='add-additional-file' pk=data.id %}">
+               <div class="form-group mb-3">
+                  <label class="col-form-label">Document Type</label>
+                  <select class="form-control select document_type_id" name="document_type_id" id="document_type_id" required>
+                     <option></option>
+                     {% for row in document_type %}
+                     <option value="{{ row.id }}">{{ row.name }}</option>
+                     {% endfor %}
+                  </select>
+               </div>
+               <div class="form-group mb-3">
+                  <label class="col-form-label">Browse Docx file</label>
+                  <input class="form-control" type="file" name="document" id="document" required accept="application/pdf">
+               </div>
+                <div class="d-flex justify-content-end">
+                   <button class="btn btn-primary add-attachment">Save</button>
+                </div>
+             </form>
+          </div>
+       </div>
+    </div>
+ </div>
+{% endblock %}
+{% block script %}
+<script src="https://unpkg.com/pdfobject@2.2.8/pdfobject.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var dateInput = document.getElementById('begin-date-completed');
+    
+        var today = new Date();
+        var yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+    
+        // Format the date as YYYY-MM-DD
+        var dd = String(yesterday.getDate()).padStart(2, '0');
+        var mm = String(yesterday.getMonth() + 1).padStart(2, '0');
+        var yyyy = yesterday.getFullYear();
+        yesterday = yyyy + '-' + mm + '-' + dd;
+    
+        dateInput.setAttribute('max', yesterday); 
+    });
+
+    const deleteFile = (pk) => {
+        console.log("Deleting file with ID:", pk);
+        swal({
+            title: "Are you sure",
+            text: "Please Confirm",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((result) => {
+            if(result){
+              $.ajax({
+                 type: 'POST',
+                 url: `/contract_files/delete-additional-file/{{data.id}}`,
+                 data: {'additional_file_id': pk, 'csrfmiddlewaretoken': getCsrfToken()},
+                 success: (result) => {
+                    swal({
+                         title: "Success",
+                         text: result['statusMsg'],
+                         icon: "success",
+                     }).then(() => {
+                         $(`.${pk}`).fadeOut(300, () => {
+                             $(this).remove();
+                         });
+                         location.reload();
+                     });
+                 },
+                 error: (result) => {
+                    swal({
+                         title: "Error",
+                         text: result['responseJSON']['statusMsg'],
+                         icon: "error",
+                    });
+                 }
+              })
+            }
+        });
+     }
+
+     function getCsrfToken() {
+        return document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+    }
+    
+
+     const fileReviewed = (pk) => {
+        swal({
+            title: "Are you sure",
+            text: "Please Confirm",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((result) => {
+            if(result){
+              $.ajax({
+                 type: 'POST',
+                 url: `/contract_files/file-reviewed/{{data.id}}`,
+                 data: {'csrfmiddlewaretoken': "{{ csrf_token }}"},
+                 success: (result) => {
+                    swal({
+                         title: "Success",
+                         text: result['statusMsg'],
+                         icon: "success",
+                     }).then(() => {
+                         location.reload(true);
+                     });
+                 },
+                 error: (result) => {
+                    swal({
+                         title: "Error",
+                         text: result['responseJSON']['statusMsg'],
+                         icon: "error",
+                    });
+                 }
+              })
+            }
+        });
+     }
+
+     const fileCompleted = (pk) => {
+        $('#completedModal').modal('show'); 
+        $('#completedModal .btn-primary').data('pk', pk);
+    };
+    
+    // Function to submit the completion date
+    function submitCompleted(pk) {
+        var beginDate = $('#begin-date-completed').val();
+        if (!beginDate) {
+            swal("Error", "You must set a begin date.", "error");
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: `/contract_files/file-completed/${pk}`,
+            data: {
+                'csrfmiddlewaretoken': "{{ csrf_token }}",
+                'begin_date_completed': beginDate
+            },
+            success: (result) => {
+                swal({
+                    title: "Success",
+                    text: result['statusMsg'],
+                    icon: "success",
+                }).then(() => {
+                    location.reload(true);
+                });
+            },
+            error: (result) => {
+                swal({
+                    title: "Error",
+                    text: result['responseJSON']['statusMsg'],
+                    icon: "error",
+                });
+            }
+        });
+    }
+    
+
+
+     const fileArchived = (pk) => {
+        swal({
+            title: "Are you sure",
+            text: "Please Confirm",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((result) => {
+            if(result){
+              $.ajax({
+                 type: 'POST',
+                 url: `/contract_files/file-archived/{{data.id}}`,
+                 data: {'csrfmiddlewaretoken': "{{ csrf_token }}"},
+                 success: (result) => {
+                    swal({
+                         title: "Success",
+                         text: result['statusMsg'],
+                         icon: "success",
+                     }).then(() => {
+                         location.reload(true);
+                     });
+                 },
+                 error: (result) => {
+                    swal({
+                         title: "Error",
+                         text: result['responseJSON']['statusMsg'],
+                         icon: "error",
+                    });
+                 }
+              })
+            }
+        });
+     }
+     
+    $(document).ready(function (){
+
+        $('#attachments-tbl').DataTable();
+
+        $('.select').select2({
+            width: '100%',
+            placeholder: 'CHOOSE',
+            allowClear: true,
+            containerCssClass: 'select',
+        });
+ 
+        var select2options = {
+            width: "100%",
+            containerCssClass: 'select',
+            allowClear: true,
+            placeholder: 'CHOOSE',
+        }
+ 
+ 
+       $('#addAttachmentForm').on('submit', (e) => {
+          e.preventDefault();
+          swal({
+              title: "Are you sure",
+              text: "Please Confirm",
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+          }).then((result) => {
+              if(result){
+                  $('.add-attachment').html('<i class="fa fa-spin fa-spinner"></i>');
+                  $('.add-attachment').attr('disabled', true);
+ 
+                  const formData = new FormData();
+                  const url =  $('#addAttachmentForm').attr("action");
+                  const type = $('#addAttachmentForm').attr("method");
+ 
+                  formData.append("document_type_id", $('#document_type_id').val())
+                  formData.append("document", $('#document')[0].files[0])
+                  formData.append("csrfmiddlewaretoken", "{{ csrf_token }}")
+ 
+                  $.ajax({
+                      type: type,
+                      url: url,
+                      data: formData,
+                      contentType: false,
+                      processData: false,
+                      success: (result) => {
+                          swal({
+                              title: "Success",
+                              text: result['statusMsg'],
+                              icon: "success",
+                          }).then(() => {
+                              location.reload();
+                          });
+                      },
+                      error: (result) => {
+                          swal({
+                              title: "Error",
+                              text: result['responseJSON']['statusMsg'],
+                              icon: "error",
+                          }).then(() => {
+                              $('.add-attachment').html('<i class="fa fa-save"></i>');
+                              $('.add-attachment').attr('disabled', false);
+                          });
+                      }
+                  });
+              }
+          });
+        });
+ 
+ 
+        $('#updateProjectForm').on('submit', (e) => {
+            e.preventDefault(); // Prevent the default form submission behavior
+            
+            swal({
+                title: "Are you sure",
+                text: "Please Confirm",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            }).then((result) => {
+                if(result){
+                    // Display a loading spinner and disable the submit button
+                    $('#updateProjectForm').find('.update-project').html('<i class="fa fa-spin fa-spinner"></i> Saving...');
+                    $('#updateProjectForm').find('.update-project').attr('disabled', true);
+                    
+                    // Extract URL, method, and form data
+                    const url = $('#updateProjectForm').attr("action");
+                    const type = $('#updateProjectForm').attr("method");
+                    const formData = $('#updateProjectForm').serialize();
+                    
+                    // Perform an AJAX request to update the file
+                    $.ajax({
+                        type: type,
+                        url: url,
+                        data: formData,
+                        success: (result) => {
+                            // Display success message and reload the page
+                            swal({
+                                title: "Success",
+                                text: result['statusMsg'],
+                                icon: "success",
+                            }).then(() => {
+                                $('#updateProjectForm').find('.update-project').html('Save Changes');
+                                $('#updateProjectForm').find('.update-project').attr('disabled', false);
+                                location.reload(); // Reload the page after successful update
+                            });
+                        },
+                        error: (result) => {
+                            // Display error message and revert button state
+                            swal({
+                                title: "Error",
+                                text: result['responseJSON']['statusMsg'],
+                                icon: "error",
+                            }).then(() => {
+                                $('#updateProjectForm').find('.update-project').html('Save Changes');
+                                $('#updateProjectForm').find('.update-project').attr('disabled', false);
+                            });
+                        }
+                    });
+                }
+            });
+        });
+        
+        $('#attachments_body .updateAttachmentForm').on('submit', (e) => {
+            e.preventDefault();
+            swal({
+                title: "Are you sure",
+                text: "Please Confirm",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            }).then((result) => {
+               if(result){
+                  $(e.target).find('.update-attachment').html('<i class="fa fa-spin fa-spinner"></i>');
+                  $(e.target).find('.update-attachment').attr('disabled', true);
+   
+                  const formData = new FormData();
+                  const url =  $('.updateAttachmentForm').attr("action");
+                  const type = $('.updateAttachmentForm').attr("method");
+   
+                  formData.append("additional_file_id", $(e.target).find('.additional_file_id').val())
+                  formData.append("document_type_id", $(e.target).find('.document_type_id').val())
+                  formData.append("document", $(e.target).find('.document')[0].files[0])
+                  formData.append("csrfmiddlewaretoken", "{{ csrf_token }}")
+   
+                  $.ajax({
+                     type: type,
+                     url: url,
+                     data: formData,
+                     contentType: false,
+                     processData: false,
+                     success: (result) => {
+                         swal({
+                             title: "Success",
+                             text: result['statusMsg'],
+                             icon: "success",
+                         }).then(() => {
+                             $(e.target).find('.update-attachment').html('<i class="fa fa-save"></i>');
+                             $(e.target).find('.update-attachment').attr('disabled', false);
+                             result['file_directory'] != null ? $(e.target).find('.frame').prop('src', `http://127.0.0.1:8000${result['file_directory']}`) : 'None'
+                         });
+                     },
+                     error: (result) => {
+                         swal({
+                             title: "Error",
+                             text: result['responseJSON']['statusMsg'],
+                             icon: "error",
+                         }).then(() => {
+                             $(e.target).find('.update-attachment').html('<i class="fa fa-save"></i>');
+                             $(e.target).find('.update-attachment').attr('disabled', false);
+                         });
+                     }
+                  });
+               }
+            })
+         });
+   
+    });
+ 
+        $(document).on('click', 'button[data-role=remove-attachment]', function(){
+            $(this).closest('.border').remove();
+        });
+</script>
+{% endblock %}

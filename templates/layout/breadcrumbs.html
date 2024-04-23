@@ -1,0 +1,20 @@
+<div class="container-fluid container-bread">
+   <div class="page-title">
+       <div class="row">
+           <div class="col-6">
+               <h3>{{module_name}}</h3>
+           </div>
+           <div class="col-6">
+               <ol class="breadcrumb">
+                   {% for row in breadcrumbs %}
+                       <li class="breadcrumb-item{% if forloop.last %} active{% endif %}">{{row}}</li>
+                   {% endfor %}
+                   {% if 'update' in action %}
+                       <li class="breadcrumb-item">Update</li>
+                       <li class="breadcrumb-item active">No. {{data.id}}</li>
+                   {% endif %}
+               </ol>
+           </div>
+       </div>
+   </div>
+</div>

@@ -1,0 +1,29 @@
+{% load tags %}
+<br>
+<table class="table table-bordered table-hover table-condensed">
+    <thead  style="text-align: center;">
+        <th class="fw-bold text-uppercase">UUID</th>
+        <th class="fw-bold text-uppercase">TITLE</th>
+        <th class="fw-bold text-uppercase">REMARKS</th>
+        <th class="fw-bold text-uppercase">DATE CREATED</th>
+        <th class="fw-bold text-uppercase">USER</th>
+    </thead>
+    <tbody>
+        {% for row in data %}
+            <tr>
+                <td class="text-uppercase">{{ row.id }}</td>
+                <td class="text-uppercase">{{row.title}}</td>
+                <td class="text-uppercase">{{row.remarks}}</td>
+                <td style="text-align: center;">{{row.date_created}}</td>
+                <td class="text-uppercase" style="text-align: center;">{% get_by row.created_by %}</td>
+               
+        {% endfor %}
+    </tbody>
+</table>
+<div class="d-flex justify-content-between">
+  <label class="mt-3">{% if data %} Showing {{ data.start_index }} - {{ data.end_index }} of {{ data.paginator.count }} entr{{ data.paginator.count|pluralize:"y,ies" }} {% else %} No entry {% endif %}</label>
+  <ul class="pagination pagination-primary mt-2 d-flex justify-content-end">
+     <li class="page-item"><a class="page-link {% if not data.has_previous %} disabled {% else %} cursor-pointer {% endif %}" {% if data.has_previous %} hx-get="{% url 'backend-system-logs-page' %}?{% if action == 'filter' %} keyword={{keyword}}{% endif %}&page={{ data.previous_page_number }}" hx-trigger="click" hx-target="#libraryBody" hx-swap="innerHTML" {% endif %}tabindex="-1">Previous</a></li>
+     <li class="page-item"><a class="page-link {% if not data.has_next %} disabled {% else %} cursor-pointer {% endif %}" {% if data.has_next %} hx-get="{% url 'backend-system-logs-page' %}?{% if action == 'filter' %} keyword={{keyword}}{% endif %}&page={{ data.next_page_number }}" hx-trigger="click" hx-target="#libraryBody" hx-swap="innerHTML" {% endif %}>Next</a></li>
+  </ul>
+</div>

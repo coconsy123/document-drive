@@ -1,0 +1,174 @@
+{% extends 'layout/base.html' %} 
+{% load tags %}
+{% block body %}
+{% category_type as category_type %}
+{% division_type as division_type %}
+<div class="row">   
+  <div class="col-sm-6 col-xl-3 col-lg-6">
+    <div class="card o-hidden">
+      <div class="bg-primary b-r-4 card-body">
+        <div class="media static-top-widget">
+          <div class="align-self-center text-center"><i data-feather="database"></i></div>
+          <div class="media-body"><span class="m-0">Pending</span>
+            <h4 class="mb-0 counter">{% get_file_upload_count 'Pending'  %}</h4><i class="icon-bg" data-feather="database"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3 col-lg-6">
+    <div class="card o-hidden">
+      <div class="bg-secondary b-r-4 card-body">
+        <div class="media static-top-widget">
+          <div class="align-self-center text-center"><i data-feather="shopping-bag"></i></div>
+          <div class="media-body"><span class="m-0">Contract Reviewed/LRI Issued</span>
+            <h4 class="mb-0 counter">{% get_file_upload_count 'Reviewed' %}</h4><i class="icon-bg" data-feather="shopping-bag"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3 col-lg-6">
+    <div class="card o-hidden">
+      <div class="bg-success b-r-4 card-body">
+        <div class="media static-top-widget">
+          <div class="align-self-center text-center"><i data-feather="shopping-bag"></i></div>
+          <div class="media-body"><span class="m-0">For Implementation/Completed</span>
+            <h4 class="mb-0 counter">{% get_file_upload_count 'Completed' %}</h4><i class="icon-bg" data-feather="shopping-bag"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3 col-lg-6">
+    <div class="card o-hidden">
+      <div class="bg-warning b-r-4 card-body">
+        <div class="media static-top-widget">
+          <div class="align-self-center text-center"><i data-feather="shopping-bag"></i></div>
+          <div class="media-body"><span class="m-0">Archived</span>
+            <h4 class="mb-0 counter">{% get_file_upload_count 'Archived' %}</h4><i class="icon-bg" data-feather="shopping-bag"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-8 project-list">
+    <div class="card">
+        <br>
+        <div class="card-body">
+            <div class="table-responsive" id="libraryBody">
+                <table class="table table-bordered table-hover table-condensed" id="contract_files_tbl">
+                    <thead  style="text-align: center;">
+                        <th class="fw-bold text-uppercase">UUID</th>
+                        <th class="fw-bold text-uppercase">Name of File</th>
+                        <th class="fw-bold text-uppercase">Description</th>
+                        <th class="fw-bold text-uppercase">Division Type</th>
+                        <th class="fw-bold text-uppercase">Category Type</th>
+                        <th class="fw-bold text-uppercase">Date Added</th>
+                        <th class="fw-bold text-uppercase">Status</th>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+  </div>
+    <div class="col-xl-4 col-lg-12 box-col-12">
+    <div>
+      <div class="card">
+        <div class="card-header">
+          <h5 class="text-uppercase">Recent Activity</h5>
+          <div class="card-header-right">
+            <ul class="list-unstyled card-option">
+              <li><i class="fa fa-spin fa-cog"></i></li>
+              <li><i class="view-html fa fa-code"></i></li>
+              <li><i class="icofont icofont-maximize full-card"></i></li>
+              <li><i class="icofont icofont-minus minimize-card"></i></li>
+              <li><i class="icofont icofont-refresh reload-card"></i></li>
+              <li><i class="icofont icofont-error close-card"></i></li>
+            </ul>
+          </div>
+        </div>
+        <div class="card-body">
+          <ul class="crm-activity" id="RecentActivity">
+            {% include 'backend/contract_files/dashboard/partial-dashboard.html' %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    const toggleFile = (pk) => {
+        window.location.href = `/contract_files/view/${pk}`
+     }
+    
+    $(document).ready(function() {
+    var table = $('#contract_files_tbl').DataTable({
+        'serverSide': true,
+        'processing': true,
+        'deferRender': true,
+        'lengthMenu': [ 10, 25, 50, 100 ],
+        'order': [[ 1, 'desc' ]],
+        'bDestroy': true,
+        'ajax': {
+            'url': '/api/contract_files/?format=datatables',
+            'type': 'GET',
+        },
+        'fnCreatedRow': function (row, data, index) {
+            $(row).attr('id', data['id']);
+        },
+        'columns': [
+            {
+                'data': 'id',
+                'render': function(data, type, row, meta) {
+                    return `<a href="/contract_files/view/${row['id']}">${row['id']}</a>`
+                }
+            },
+            {'data': 'title', 'searchable': true},
+            {'data': 'description', 'searchable': false},
+            {'data': 'division_type_name', 'sortable': false, 'searchable': false},
+            {'data': 'category_type_name', 'sortable': false, 'searchable': false},
+            {'data': 'date_created', 'sortable': false, 'searchable': false},
+            {'data': 'status_color', 'sortable': false, 'searchable': false},
+        ],
+        "columnDefs": [
+            { "orderable": false, "searchable": false, "targets": [2, 5] },
+            
+        ]
+    });
+    var currentCategory = null;
+    var currentDivision = null;
+    
+    $('#category_type').on('change', function (){
+        currentCategory = $(this).val();
+        updateDataTable();
+    });
+    
+    $('#division_type').on('change', function (){
+        currentDivision = $(this).val();
+        updateDataTable();
+    });
+    
+    
+    function updateDataTable() {
+        var url = '/api/contract_files/?format=datatables';
+        if (currentCategory) {
+            url += '&category_id=' + currentCategory;
+        }
+        if (currentDivision) {
+            url += '&division_id=' + currentDivision;
+        }
+        table.ajax.url(url).load();
+    }
+    python 
+    
+});
+
+</script>
+{% endblock  %}

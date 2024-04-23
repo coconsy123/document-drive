@@ -1,0 +1,57 @@
+{% load static %}
+<div class="sidebar-wrapper">
+   <div>
+      <div class="logo-wrapper">
+         <a href="backend-dashboard-page"><img class="img-fluid for-light" src="{% static 'images/logo/drive-1.png' %}" width="27px" height="27px">&nbsp;<span><strong>D-DRIVE</strong></span></a>
+         <div class="back-btn"><i class="fa fa-angle-left"></i></div>
+         <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="grid"> </i></div>
+      </div>
+      <div class="logo-icon-wrapper"><a href="backend-dashboard-page"><img class="img-fluid" src="{% static 'images/logo/drive-1.png' %}" style="height:26px;"></a></div>
+      <nav class="sidebar-main">
+         <div class="left-arrow" id="left-arrow"><i data-feather="arrow-left"></i></div>
+         <div id="sidebar-menu">
+            <ul class="sidebar-links" id="simple-bar">
+               <li class="back-btn">
+                  <a href="backend-dashboard-page"><img class="img-fluid" src="#" alt=""></a>
+                  <div class="mobile-back text-end"><span>Back</span><i class="fa fa-angle-right ps-2" aria-hidden="true"></i></div>
+               </li>
+               <li class="sidebar-main-title">
+                  <div>
+                     <h6 class="lan-1">General</h6>
+                     <p>Dashboard, Contract Files, Case Files</p>
+                  </div>
+               </li>
+               <li class="sidebar-list"><a class="sidebar-link sidebar-title link-nav" href="#"><i class="fa fa-bar-chart-o"></i><span> Dashboard</span></a></li>
+               <li class="sidebar-list" ><a class="sidebar-link sidebar-title" ><i class="fa fa-folder"></i><span> Contract Files</span></a>
+                  <ul class="sidebar-submenu">
+                     <li><a href="{% url 'backend-dashboard-page' %}">Dashboard</a><li>
+                     <li><a href="{% url 'backend-contract-files-page' %}">Contract List</a><li>
+                     <li><a href="{% url 'backend-reports-page' %}">Reports</a><li>
+                  </ul>
+               </li>
+               <li class="sidebar-list" ><a class="sidebar-link sidebar-title" ><i class="fa fa-gavel"></i><span> Case Files</span></a>
+                  <ul class="sidebar-submenu">
+                     <li><a href="{% url 'backend-case-files-page' %}">Case List</a><li>
+                  </ul>
+               </li>    
+               <li class="sidebar-main-title">
+                  <div>
+                     <h6>Administrator</h6>
+                     <p>Libraries, Users, System Logs</p>
+                  </div>
+               </li>
+               <li class="sidebar-list"><a class="sidebar-link sidebar-title" ><i class="fa fa-th-list"></i><span> Libraries</span></a>
+                  <ul class="sidebar-submenu">
+                     <li><a href="{% url 'libraries-document_type-page' %}">Document Type</a></li>
+                     <li><a href="{% url 'libraries-category_type-page' %}">Category Type</a></li>
+                     <li><a href="{% url 'libraries-division_type-page' %}">Division Type</a></li>
+                  </ul>
+               </li>
+               <li class="sidebar-list"><a class="sidebar-link sidebar-title link-nav" href="#"><i data-feather="users"></i><span>Users</span></a></li>
+               <li class="sidebar-list"><a class="sidebar-link sidebar-title link-nav" href="{% url 'backend-system-logs-page' %}"><i class="fa fa-spin fa-cog"></i><span> System Logs</span></a></li>
+            </ul>
+         </div>
+         <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
+      </nav>
+   </div>
+</div>

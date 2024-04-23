@@ -1,0 +1,94 @@
+body {
+    background: rgb(204, 204, 204);
+}
+page {
+    background: white;
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 1cm;
+    margin-top: 1cm;
+    box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+}
+.page-content {
+    padding: 1.27cm;
+    margin: 0 !important;
+}
+
+.page-content-no-margin {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+page[size="A4"] {
+    width: 21cm;
+    min-height: 29.7cm;
+    height: auto;
+}
+page[size="A4"][layout="landscape"] {
+    width: 29.7cm;
+    min-height: 21cm;
+    height: auto;
+}
+
+page[size="letter"] {
+    width: 21.59cm;
+    height: 27.94cm;
+}
+page[size="letter"][layout="landscape"] {
+    width: 27.94cm;
+    height: 21.59cm;
+}
+
+page[size="long"] {
+    width: 21.59cm;
+    height: 33.02cm;
+}
+page[size="long"][layout="landscape"] {
+    width: 33.02cm;
+    height: 21.59cm;
+}
+
+@media print {
+    body, page {
+        margin: 0 !important;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+    }
+    .page-content {
+        padding: 4px !important;
+        margin: 0 !important;
+    }
+    page[size="A4"][layout="landscape"] {
+        page-break-after: always;
+        page-break-inside: avoid;
+        width: 29.7cm;
+        min-height: 20.98cm;
+        max-height: 20.98cm;
+    }
+}
+
+.print-box {
+    padding: .6cm;
+}
+
+.print-box-1 {
+    border-right: 0.8px dashed #777 !important;
+    border-bottom: 0.8px dashed #777 !important;
+}
+
+.print-box-2 {
+    border-bottom: 0.8px dashed #777 !important;
+}
+
+.print-box-4 {
+    border-left: 0.8px dashed #777 !important;
+}
+
+.print-box-5 {
+    border-right: 0.8px dashed #777 !important;
+}
+
+.blank-line {
+    border-bottom: 0.5px dotted rgba(116,120,141,0.8) !important;
+}

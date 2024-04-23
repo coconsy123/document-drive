@@ -1,0 +1,33 @@
+{% load tags %}
+<br>
+<table class="table table-bordered table-hover table-condensed">
+    <thead  style="text-align: center;">
+        <th class="fw-bold text-uppercase">Actions</th>
+        <th class="fw-bold text-uppercase">Name of Document</th>
+        <th class="fw-bold text-uppercase">Created by</th>
+        <th class="fw-bold text-uppercase">Date Created</th>
+        <th class="fw-bold text-uppercase">Updated by</th>
+        <th class="fw-bold text-uppercase">Date Updated</th>
+        <th class="fw-bold text-uppercase">Active</th>
+    </thead>
+    <tbody>
+        {% for row in data %}
+            <tr>
+                <td><button class="btn btn-primary btn-xs" onClick="updateLibrary('{{row.id}}');">Update</button>  <button class="btn btn-danger btn-xs" onClick="deleteLibrary('{{row.id}}');">Delete</button></td>
+                <td class="text-uppercase">{{row.name}}</td>
+                <td class="text-uppercase" style="text-align: center;">{% get_by row.created_by %}</td>
+                <td style="text-align: center;">{{row.date_created}}</td>
+                <td class="text-uppercase">{% get_by row.updated_by %}</td>
+                <td>{% if row.date_updated %} {{row.date_updated}} {% endif %}</td>
+                <td style="text-align: center;">{% get_is_active row.is_active %}</td>
+               
+        {% endfor %}
+    </tbody>
+</table>
+<div class="d-flex justify-content-between">
+  <label class="mt-3">{% if data %} Showing {{ data.start_index }} - {{ data.end_index }} of {{ data.paginator.count }} entr{{ data.paginator.count|pluralize:"y,ies" }} {% else %} No entry {% endif %}</label>
+  <ul class="pagination pagination-primary mt-2 d-flex justify-content-end">
+     <li class="page-item"><a class="page-link {% if not data.has_previous %} disabled {% else %} cursor-pointer {% endif %}" {% if data.has_previous %} hx-get="{% url 'libraries-document_type-page' %}?{% if action == 'filter' %} keyword={{keyword}}{% endif %}&page={{ data.previous_page_number }}" hx-trigger="click" hx-target="#libraryBody" hx-swap="innerHTML" {% endif %}tabindex="-1">Previous</a></li>
+     <li class="page-item"><a class="page-link {% if not data.has_next %} disabled {% else %} cursor-pointer {% endif %}" {% if data.has_next %} hx-get="{% url 'libraries-document_type-page' %}?{% if action == 'filter' %} keyword={{keyword}}{% endif %}&page={{ data.next_page_number }}" hx-trigger="click" hx-target="#libraryBody" hx-swap="innerHTML" {% endif %}>Next</a></li>
+  </ul>
+</div>

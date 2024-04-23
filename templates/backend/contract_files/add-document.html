@@ -1,0 +1,35 @@
+{% load tags %}
+{% document_type as document_type %}
+<div class="border border-1 p-3 rounded mb-3">
+    <div class="row">
+       <div class="col-10">
+        <div class="mb-3">
+            <label>Document Type <span class="text-danger">*</span></label>
+            <select class="form-control select document_type_id " id="document_type_id" name="document_type_id" required>
+                {% for row in document_type %}
+                    <option value="{{ row.id }}">{{ row.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="col-form-label">Browse Docx file <span class="text-danger">*</span></label>
+            <input class="form-control documents" type="file" name="documents" id="documents" required accept="application/pdf">
+         </div>
+       </div>
+       <div class="col-2 text-center mt-5">
+          <button class="btn btn-danger mt-4" title="Remove Attachment" data-role="remove-attachment"><i class="fa fa-trash"></i></button>
+       </div>
+    </div>
+ </div>
+{% block script %}
+<script>
+    $(document).ready(function(){
+        $('.select').select2({
+           width: '100%',
+           placeholder: 'CHOOSE',
+           allowClear: true,
+           containerCssClass: 'select',
+       });
+    });
+</script>
+{% endblock %}

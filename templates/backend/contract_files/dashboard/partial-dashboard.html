@@ -1,0 +1,19 @@
+{% load tags %}
+    {% for row in data  %}
+    <li class="media"><span class="me-3 font-primary"><i class="fa fa-file-text"></i></span>
+      <div class="align-self-center media-body">
+        <h6 class="mt-0">{{ row.title }} {{ row.remarks }} {% get_by row.created_by %}</h6>
+        <ul class="dates">
+          <li>{{ row.date_created }}</li>
+          <li>{{ row.date_created|timesince }} ago</li>
+        </ul>
+      </div>
+    </li>
+    {% endfor %}
+  <div class="d-flex justify-content-between">
+    <label class="mt-3">{% if data %} Showing {{ data.start_index }} - {{ data.end_index }} of {{ data.paginator.count }} entr{{ data.paginator.count|pluralize:"y,ies" }} {% else %} No entry {% endif %}</label>
+    <ul class="pagination pagination-primary mt-2 d-flex justify-content-end">
+       <li class="page-item"><a class="page-link {% if not data.has_previous %} disabled {% else %} cursor-pointer {% endif %}" {% if data.has_previous %} hx-get="{% url 'backend-dashboard-page' %}?{% if action == 'filter' %} keyword={{keyword}}{% endif %}&page={{ data.previous_page_number }}" hx-trigger="click" hx-target="#RecentActivity" hx-swap="innerHTML" {% endif %}tabindex="-1">Previous</a></li>
+       <li class="page-item"><a class="page-link {% if not data.has_next %} disabled {% else %} cursor-pointer {% endif %}" {% if data.has_next %} hx-get="{% url 'backend-dashboard-page' %}?{% if action == 'filter' %} keyword={{keyword}}{% endif %}&page={{ data.next_page_number }}" hx-trigger="click" hx-target="#RecentActivity" hx-swap="innerHTML" {% endif %}>Next</a></li>
+    </ul>
+  </div>

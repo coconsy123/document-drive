@@ -1,0 +1,143 @@
+{% extends 'layout/base.html' %}
+{% load tags %}
+{% block body %}
+<div class="col-sm-12">
+    <div class="card">
+      <div class="card-body">
+        <table class="table table-bordered">
+            <center>
+                <h5>LEGAL SECTION</h5>
+                <h5>OFFICE OF THE REGIONAL DIRECTOR</h5>
+                <h5>FIELD OFFICE CARAGA</h5>
+                <p contenteditable="true">DSWD-GF-004 | REV 01 / 12 OCT 2021</p>
+            </center>
+            <br>
+            <thead>
+                <tr>
+                    <th colspan="8"><center>MONITORING REPORT FOR CONTRACT</center></th>
+                <tr>
+                <tr>
+                    <th colspan="8"><center>CALENDAR YEAR 2024</center></th>
+                <tr>
+                <tr>
+                    <th>PROPONENT/OBSU</th>
+                <tr>
+                <tr>
+                  <th>Contact No.</th>
+                  <th>Title</th>
+                  <th>Date of Contract</th>
+                  <th>Implementing Proponets/OBSU</th>
+                  <th>Type of Contract NEW/AMENDMENT/RENEWAL</th>
+                  <th>Date of Coverage</th>
+                  <th>Remaks</th>
+                  <th> <button type="button" id="addRow" class="btn btn-primary btn-xs mb-2">+</button></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="input-group">
+                            <input class="form-control me-2" type="text" >
+                          </div>
+                      </td>
+                      <td>
+                        <div class="input-group">
+                            <input class="form-control me-2" type="text">
+                          </div>
+                      </td>
+                      <td>
+                        <div class="input-group">
+                            <input class="form-control me-2" type="Date" >
+                          </div>
+                      </td>
+                      <td>
+                        <div class="input-group">
+                            <input class="form-control me-2" type="text">
+                          </div>
+                      </td>
+                      <td>
+                        <div class="input-group">
+                            <input class="form-control me-2" type="text">
+                          </div>
+                      </td>
+                      <td>
+                        <div class="input-group">
+                            <input class="form-control me-2" type="Date">
+                          </div>
+                      </td>
+                      <td>
+                        <div class="input-group">
+                            <input class="form-control me-2" type="text">
+                          </div>
+                      </td>
+                      <td>
+                        <button type="button" class="btn btn-danger btn-xs removeRow">-</button>
+                      </td>
+                </tr>
+            </tbody>
+           <thead>
+              <tr>
+                <th>Date:</th>
+                <th>Prepared by:<br>Name:<br>Designation:</th>
+                <th colspan="2"></th>
+                <th>Noted by:<br>Name:<br>Designation:</th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tr>
+           </thead>
+        </table>
+        <br>
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-primary" type="submit" id="saveLibraryBtn">Save</button>&nbsp;<button class="btn btn-success" type="button" id="printButton">Print</button>
+       </div>
+      </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    const rowLimit = 13;
+    const table = document.querySelector('.table tbody');
+
+   
+
+    function addRow() {
+      let rowCount = table.rows.length;
+      if (rowCount < rowLimit) {
+        const newRow = table.insertRow();
+        for (let i = 0; i < 7; i++) {
+          const newCell = newRow.insertCell();
+          const input = document.createElement('input');
+          input.type = i === 2 || i === 5 ? 'date' : 'text'; // Assuming cells 3 and 6 are dates
+          input.className = 'form-control me-2';
+          newCell.appendChild(input);
+        }
+        const removeCell = newRow.insertCell();
+        const removeButton = document.createElement('button');
+        removeButton.innerHTML = '&minus;'; // Using HTML minus symbol
+        removeButton.className = 'btn btn-danger btn-xs removeRow';
+        removeButton.onclick = removeRow;
+        removeCell.appendChild(removeButton);
+      } else {
+        alert('Maximum of 13 rows reached');
+      }
+    }
+
+    function removeRow(e) {
+      e.target.closest('tr').remove();
+    }
+
+    document.getElementById('addRow').addEventListener('click', addRow);
+
+    // Attach removeRow event to existing remove button
+    document.querySelector('.removeRow').addEventListener('click', removeRow);
+
+    document.getElementById('printButton').addEventListener('click', function() {
+      window.location.href = '{% url "print-report" %}';
+    });
+
+  });
+</script>
+{% endblock  %}
