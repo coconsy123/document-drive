@@ -28,6 +28,44 @@
                                 <input type="date" class="form-control" id="date-case-received">
                             </div>
                         </div>
+                        <hr>
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <label>Case Category<span class="text-danger">*</span></label>
+                                <select class="form-control select case_category " id="case_category" name="case_category"  required>
+                                    <option value="">-- Select Case Category --</option>
+                                    
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <label>Nature Case<span class="text-danger">*</span></label>
+                                <select class="form-control select nature_case " id="nature_case" name="nature_case"  required>
+                                    <option value="">-- Select Nature Case --</option>
+                                    
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="description" rows="8" name="description" required></textarea>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <label>Case Status<span class="text-danger">*</span></label>
+                                <select class="form-control select nature_case " id="nature_case" name="nature_case"  required>
+                                    <option value="">-- Select Case Status --</option>
+                                    
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <label>Status, if others <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="case_title" name="case_title" oninput="this.value = this.value.toUpperCase()" required>
+                            </div>
+                        </div>
                     </div>
                 </form>
              </div>
