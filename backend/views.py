@@ -17,6 +17,7 @@ from backend.models import ContractFiles, FileUpdate, AdditionalFile
 import os
 import urllib.parse
 
+
 @login_required
 def contract_files_dashboard(request, action=None, pk=None):
     context = {
@@ -116,6 +117,7 @@ def contract_files_page(request, action=None, pk=None):
                 category_type_id = request.GET.get('category_type') if request.GET.get('category_type') != "None" else None
                 division_type_id = request.GET.get('division_type') if request.GET.get('division_type') != "None" else None
                 status = request.GET.get('status') if request.GET.get('status') != "None" and request.GET.get('status') != "" else None
+                year = int(request.GET.get('year')) if request.GET.get('year') and request.GET.get('year').isdigit() else None
 
                 queryset = ContractFiles.objects.filter(is_active=True)
 
@@ -127,7 +129,9 @@ def contract_files_page(request, action=None, pk=None):
 
                 if status:
                     queryset = queryset.filter(status=status)
-                
+
+                if year:
+                    queryset = queryset.filter(begin_date_completed__year=year)
 
                 context['data'] = Paginator(queryset.order_by('-date_created'), 12).page(page_num)
 
@@ -138,8 +142,13 @@ def contract_files_page(request, action=None, pk=None):
                     keyword.append(f"division_type={division_type_id}")
                 if status:
                     keyword.append(f"status={status}")
+                if year:
+                    keyword.append(f"year={year}")
                 context['keyword'] = "&".join(keyword)
                 return render(request, 'backend/contract_files/partial-file-upload.html', context)
+
+            
+
                 
     elif action is not None and pk is not None:
         contract_files = ContractFiles.objects.get(id=pk)
