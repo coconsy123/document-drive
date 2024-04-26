@@ -87,6 +87,13 @@
                                  </select>
                               </div>
                            </div>
+                           <div class="job-filter mb-2">
+                              <label>Year</label>
+                              <div class="faq-form">
+                                  <input type="number" class="form-control" id="year" name="year" placeholder="Enter Year" min="1900" max="2099">
+                              </div>
+                          </div>
+                          
                            <br>
                           <div class="d-flex justify-content-end">
                              <button class="btn btn-primary text-center col-5" type="submit" >Filter</button>
@@ -95,36 +102,6 @@
                     </div>
                  </div>
               </div>
-               <div class="card">
-                  <div class="card-header" id="headingOne">
-                     <h2 class="mb-0">
-                        <button class="btn btn-link btn-block text-start" type="button">Date Filter</button>
-                     </h2>
-                  </div>
-                  <div class="collapse show" id="collapseOne" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                     <div class="card-body filter-cards-view animate-chk">
-                        <form hx-get="#" hx-trigger="submit" hx-target="#libraryBody" hx-indicator="#spinner">
-                           {% csrf_token %}
-                           <div class="job-filter mb-2">
-                              <label>Begin Date</label>
-                              <div class="faq-form">
-                                 <input type="date" class="form-control" id="date-case-filed">
-                              </div>
-                           </div>
-                           <div class="job-filter mb-2">
-                              <label>End Date</label>
-                              <div class="faq-form">
-                                 <input type="date" class="form-control" id="date-case-filed">
-                              </div>
-                           </div>
-                           <br>
-                           <div class="d-flex justify-content-end">
-                              <button class="btn btn-primary text-center col-5" type="submit" >Submit</button>
-                           </div>
-                        </form>
-                     </div>
-                  </div>
-               </div>
            </div>
         </div>
      </div>
