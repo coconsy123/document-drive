@@ -1,0 +1,13 @@
+asgiref==3.7.2
+Django==5.0.2
+django-appconf==1.0.6
+django-compressor==4.4
+djangorestframework==3.14.0
+djangorestframework-datatables==0.7.0
+mysqlclient==2.2.4
+pytz==2024.1
+rcssmin==1.1.1
+rjsmin==1.2.1
+six==1.16.0
+sqlparse==0.4.4
+tzdata==2024.1

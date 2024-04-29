@@ -7,6 +7,7 @@
                 <h6><b>{{ row.title|truncatewords:4 }}</b></h6>
                 <p>{{ row.category_type }} <br>
                    {{ row.division_type|truncatewords:3 }} <br>
+                   {{ row.begin_date_completed }}
                   {% if row.status == 'Pending' %}
                   <p class="mb-1"><span class="badge badge-primary">{{row.status}}</span></p>
                   {% elif row.status == 'Reviewed' %}

@@ -33,7 +33,9 @@
                   <ul class="sidebar-submenu">
                      <li><a href="{% url 'backend-case-files-page' %}">Case List</a><li>
                   </ul>
-               </li>    
+               </li>
+               {% if request.user.is_superuser %}
+                
                <li class="sidebar-main-title">
                   <div>
                      <h6>Administrator</h6>
@@ -47,8 +49,11 @@
                      <li><a href="{% url 'libraries-division_type-page' %}">Division Type</a></li>
                   </ul>
                </li>
+               
                <li class="sidebar-list"><a class="sidebar-link sidebar-title link-nav" href="#"><i data-feather="users"></i><span>Users</span></a></li>
                <li class="sidebar-list"><a class="sidebar-link sidebar-title link-nav" href="{% url 'backend-system-logs-page' %}"><i class="fa fa-spin fa-cog"></i><span> System Logs</span></a></li>
+               
+               {% endif %}
             </ul>
          </div>
          <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
