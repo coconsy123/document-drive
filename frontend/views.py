@@ -21,6 +21,7 @@ def index_page(request):
 
 
 
+
 @unauthenticated_user
 def login_page(request):
     if request.user.is_authenticated:

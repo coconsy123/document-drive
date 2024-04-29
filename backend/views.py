@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
-# Create your views here.
 from django.http import JsonResponse, FileResponse, HttpResponse
 from django.db import transaction
 from django.core.paginator import Paginator
@@ -111,7 +111,6 @@ def contract_files_page(request, action=None, pk=None):
                 context['keyword'] = keyword
                 return render(request, 'backend/contract_files/partial-file-upload.html', context)
             
-        
         elif action == "filter":
             if request.method == "GET":
                 category_type_id = request.GET.get('category_type') if request.GET.get('category_type') != "None" else None
@@ -146,9 +145,6 @@ def contract_files_page(request, action=None, pk=None):
                     keyword.append(f"year={year}")
                 context['keyword'] = "&".join(keyword)
                 return render(request, 'backend/contract_files/partial-file-upload.html', context)
-
-            
-
                 
     elif action is not None and pk is not None:
         contract_files = ContractFiles.objects.get(id=pk)
@@ -251,27 +247,29 @@ def contract_files_page(request, action=None, pk=None):
             except Exception as e:
                 return JsonResponse({'statusMsg': str(e)}, status=404)
             
-        elif action == "file-reviewed":
-            contract_files.status = "Reviewed"
+        elif action in ["file-reviewed", "file-completed", "file-archived"]:
+            if action == "file-completed":
+                completion_date = request.POST.get('begin_date_completed')
+                if not completion_date:
+                    return JsonResponse({'statusMsg': 'Completion date is required.'}, status=400)
+                try:
+                    parsed_date = datetime.strptime(completion_date, '%Y-%m-%d')
+                    contract_files.begin_date_completed = timezone.make_aware(parsed_date)
+                except ValueError:
+                    return JsonResponse({'statusMsg': 'Invalid date format.'}, status=400)
+            
+            status_mapping = {
+                "file-reviewed": "Reviewed",
+                "file-completed": "Completed",
+                "file-archived": "Archived"
+            }
+            contract_files.status = status_mapping[action]
             contract_files.save()
-            file_update = FileUpdate.objects.create(title=f"{contract_files.title}", remarks=f"file has been {contract_files.status} by", created_by=request.user)
+            
+            file_update = FileUpdate.objects.create(title=f"{contract_files.title}", remarks="file has been updated by", created_by=request.user)
             return JsonResponse({'statusMsg': 'Success'}, status=200)
 
-        elif action == "file-completed":
-            completion_date = request.POST.get('begin_date_completed')
-            contract_files.status = "Completed"
-            contract_files.begin_date_completed = timezone.make_aware(datetime.strptime(completion_date, '%Y-%m-%d'))
-            contract_files.save()
-            file_update = FileUpdate.objects.create(title=f"{contract_files.title}", remarks=f"file has been {contract_files.status} by", created_by=request.user)
-            return JsonResponse({'statusMsg': 'Success'}, status=200)
-        
-        elif action == "file-archived":
-            contract_files.status = "Archived"
-            contract_files.save()
-            file_update = FileUpdate.objects.create(title=f"{contract_files.title}", remarks=f"file has been {contract_files.status} by", created_by=request.user)
-            return JsonResponse({'statusMsg': 'Success'}, status=200)
-        else:
-            return JsonResponse({'statusMsg': 'Unauthorized Access!'}, status=404)
+        return JsonResponse({'statusMsg': 'Unauthorized Access!'}, status=404)
         
 
     context['status'] = ['Pending', 'Reviewed', 'Completed', 'Archived']
@@ -333,3 +331,59 @@ def system_logs(request, action=None, pk=None):
      template = 'backend/system_logs/system-logs.html' if not request.GET.get('page') else \
      'backend/system_logs/partial-system-logs.html'
      return render(request, template, context)
+
+
+
+
+@login_required()
+def accounts_page(request, action=None, pk=None):
+    try:
+        page_num = 1 if not request.GET.get('page') else request.GET.get('page')
+        context = {
+            'title': 'Document Drive - Accounts',
+            'module_name': 'Accounts',
+            'breadcrumbs': ['Accounts'],
+            'action': action,
+            'data': None
+        }
+        if action is not None and pk is None:
+            pass
+
+        elif action is not None and pk is not None:
+            if action == 'update-status':
+                account = Account.objects.filter(id=pk).first()
+                if account:
+                    type = request.POST.get('type')
+                    val = True if request.POST.get('val') == '1' else False
+                    if type == 'is_admin':
+                        account.is_admin = val
+                        account.save()
+                        return JsonResponse({'statusMsg': 'Success'}, status=200)
+                    elif type == 'is_active':
+                        account.is_active = val
+                        account.save()
+                        return JsonResponse({'statusMsg': 'Success'}, status=200)
+                 
+                    elif type == 'is_superuser':
+                        account.is_superuser = val
+                        account.save()
+                        return JsonResponse({'statusMsg': 'Success'}, status=200)
+                    
+        elif action == "change-password" and request.method == "POST":
+            old_password = request.POST.get('old_password')
+            user = authenticate(email=request.user.email, password=old_password)
+            if user:
+                new_password = request.POST.get('new_password')
+                confirm_password = request.POST.get('confirm_password')
+
+                if new_password == confirm_password:
+                    user.set_password(f"{new_password}")
+                    user.save()
+                    return JsonResponse({'statusMsg': 'Success'}, status=200)
+            else:
+                return JsonResponse({'statusMsg': 'Unauthorized Access!'}, status=404)
+
+        context['data'] = Account.objects.exclude(id=request.user.id)
+        return render(request, 'frontend/accounts/accounts.html')
+    except Exception as e:
+        return JsonResponse({'statusMsg': str(e)}, status=404)
