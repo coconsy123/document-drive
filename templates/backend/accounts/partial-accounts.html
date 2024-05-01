@@ -1,0 +1,74 @@
+{% load tags %}
+<div id="accountstBody table-responsive">
+   <table class="table table-bordered table-hover table-condensed" id="accounts-tbl">
+      <thead>
+         <tr class="text-uppercase">
+            <th>UUID</th>
+            <th>Email</th>
+            <th>First Name</th>
+            <th>Middle name</th>
+            <th>Last Name</th>
+            <th>Is Admin</th>
+            <th>Is Active</th>
+            <th>Is Superuser</th>
+          
+         </tr>
+      </thead>
+      <tbody>
+         {% for row in data %}
+         <tr>
+            <td>{{ row.id }}</td>
+            <td>{{ row.email }}</td>
+            <td>{{ row.firstname }}</td>
+            <td>{{ row.middlename }}</td>
+            <td>{{ row.lastname }}</td>
+            <td>{% if row.is_admin %} <a class="cursor-pointer" title="Update" onClick="update_status('is_admin', '0', '{{row.id}}')"><i class="fa fa-check-circle-o text-success f-18"></i></a> {% else %} <a class="cursor-pointer" title="Update" onClick="update_status('is_admin', '1', '{{row.id}}')"><i class="fa fa-times-circle-o text-danger f-18"></i></a> {% endif %}</td>
+            <td>{% if row.is_active %} <a class="cursor-pointer" title="Update" onClick="update_status('is_active', '0', '{{row.id}}')"><i class="fa fa-check-circle-o text-success f-18"></i></a> {% else %} <a class="cursor-pointer" title="Update" onClick="update_status('is_active', '1', '{{row.id}}')"><i class="fa fa-times-circle-o text-danger f-18"></i></a> {% endif %}</td>
+            <td>{% if row.is_superuser %} <a class="cursor-pointer" title="Update" onClick="update_status('is_superuser', '0', '{{row.id}}')"><i class="fa fa-check-circle-o text-success f-18"></i></a> {% else %} <a class="cursor-pointer" title="Update" onClick="update_status('is_superuser', '1', '{{row.id}}')"><i class="fa fa-times-circle-o text-danger f-18"></i></a> {% endif %}</td>
+         </tr>
+         {% endfor %}
+      </tbody>
+   </table>
+</div>
+
+{% block script %}
+<script>
+   const update_status = (type, val, id) => {
+      swal({
+          title: "Are you sure",
+          text: "Please Confirm",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+      }).then((result) => {
+          if(result){
+             const csrf_token = "{{csrf_token}}"
+             $.ajax({
+                url: `/accounts/update-status/${id}/`,
+                type: 'POST',
+                data: {'type': type, 'val': val, 'csrfmiddlewaretoken': csrf_token },
+                success: (result) => {
+                   const statusMsg = result['statusMsg'];
+                   swal({
+                       title: "Success",
+                       text: statusMsg,
+                       icon: "success",
+                   }).then(() => {
+                       location.reload()
+                   });
+                },
+                error: (result) => {
+                   const statusMsg = result['responseJSON']['statusMsg'];
+                   swal({
+                       title: "Error",
+                       text: statusMsg,
+                       icon: "error",
+                   });
+                }
+             });
+          }
+     });
+   }
+   
+</script>
+{% endblock %}

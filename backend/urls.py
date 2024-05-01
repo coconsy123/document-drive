@@ -7,9 +7,9 @@ from backend.views import accounts_page, contract_files_dashboard, system_logs, 
 
 urlpatterns = [
 
-    path('account/', accounts_page, name='backend-account-page'),
-    path('account/<slug:action>/', accounts_page, name='backend-account-page'),
-    path('account/<slug:action>/<slug:pk>', accounts_page, name="backend-account-page"),
+    path('accounts/', accounts_page, name='backend-accounts-page'),
+    path('accounts/<slug:action>/', accounts_page, name='backend-accounts-page'),
+    path('accounts/<slug:action>/<slug:pk>/', accounts_page, name='backend-accounts-page'),
 
     path('dashboard/', contract_files_dashboard, name='backend-dashboard-page'),
     path('dashboard/<slug:action>', contract_files_dashboard, name='backend-dashboard-page'),

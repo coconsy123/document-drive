@@ -65,7 +65,7 @@ const deleteLibrary = (pk) => {
         if (willDelete) {
             $.ajax({
                 type: 'POST',
-                url: `/libraries/division_type/delete/${pk}`, 
+                url: `/division_type/delete/${pk}`, 
                 data: {
                     csrfmiddlewaretoken: getCSRFToken(), 
                     id: pk,
@@ -96,7 +96,7 @@ function getCSRFToken() {
 const updateLibrary = (pk) => {
     $('#libraryModal').modal('show');
     $('#libraryModalBody').empty();
-    $('#libraryModalBody').load(`/libraries/division_type/update/${pk}`);
+    $('#libraryModalBody').load(`/division_type/update/${pk}`);
 }
 $(document).ready(function(){
     

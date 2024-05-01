@@ -107,30 +107,70 @@
                          </div>
                     </form>
                     <hr>
+                 
                     <ul id="attachments_body">
                         <div class="d-flex justify-content-between">
                             <h6>Document Type</h6>
+                            {% if data.status != 'Archived' %}
                             <button class="btn btn-sm btn-primary btn-air-primary mb-2 p-2" data-bs-target="#addAttachmentModal" data-bs-toggle="modal">Add Document</button>
+                            {% endif %}
                         </div>
                         <table class="table table-bordered table-hover table-condensed" id="attachments-tbl">
                             <thead>
                                 <tr class="text-uppercase">
-                                    <th>Document Type</th>
                                     <th>Document Name</th>
+                                    <th>Document Type</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for row in data.document_type %}
                                     <tr>
-                                        <td>{{ row.document_type.name }}</td>
                                         <td>{{ row.file_directory|remove_documents_prefix }}</td>
+                                        <td>{{ row.document_type.name }}</td>
                                         <td style="text-align: center;" class="upper"><a class="cursor-pointer badge badge-primary" href="{{ row.file_directory }}" target="_blank">VIEW</a> |<a class="cursor-pointer badge badge-danger" title="Remove" onClick="deleteFile('{{row.id}}')">REMOVE</a></td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </ul>
+               
+                    
+                    <!--
+                        
+                        <div class="d-flex justify-content-between">
+                        <h6>Document Type</h6>
+                        <button class="btn btn-sm btn-primary btn-air-primary mb-2 p-2" data-bs-target="#addAttachmentModal" data-bs-toggle="modal">Add Document</button>
+                    </div>
+                    <div class="col-xl-12 col-md-12 box-col-12">
+                        <div class="file-content">
+                            <div class="card">
+                                <div class="card-body file-manager" id=""attachments-tbl">
+                                    <h4 class="mb-3">All Files</h4>
+                                    <ul class="files" id="attachments_body">
+                                        {% for row in data.document_type %}
+                                        <li class="file-box">
+                                            <div class="file-top">  <i class="fa fa-file-pdf-o txt-danger"></i><i class="fa fa-ellipsis-v f-14 ellips"></i></div>
+                                                <div class="file-bottom">
+                                                    <h6>{{ row.file_directory|remove_documents_prefix|truncatechars:30 }}</h6>
+                                                    <p class="mb-1">{{ row.document_type.name|truncatechars:30 }}</p>
+                                                    <p><a class="cursor-pointer badge badge-primary" href="{{ row.file_directory }}" target="_blank">VIEW</a> |<a class="cursor-pointer badge badge-danger" title="Remove" onClick="deleteFile('{{row.id}}')">REMOVE</a></p>
+
+                                                </div>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                          </div>
+                        </div>
+                    </div>
+                    -->
+                    
+                    
+                    
+
+                    
+                    
                 </div>
             </div>
         </div>
@@ -170,6 +210,8 @@
 {% block script %}
 <script src="https://unpkg.com/pdfobject@2.2.8/pdfobject.min.js"></script>
 <script>
+    
+      
     document.addEventListener("DOMContentLoaded", function() {
         var dateInput = document.getElementById('begin-date-completed');
     
