@@ -22,7 +22,7 @@ import urllib.parse
 def contract_files_dashboard(request, action=None, pk=None):
     context = {
         'module_name': 'Dashboard',
-        'title': 'Records | Backend - Dashboard',
+        'title': 'Document Drive | Backend - Dashboard',
         'action': action,
         'breadcrumbs': None,
         'form': None,
@@ -43,7 +43,7 @@ def contract_files_dashboard(request, action=None, pk=None):
     template = 'backend/contract_files/dashboard/dashboard.html' if not request.GET.get('page') else \
     'backend/contract_files/dashboard/partial-dashboard.html'
     return render(request, template, context)
-    
+
 
 
 
@@ -51,7 +51,7 @@ def contract_files_dashboard(request, action=None, pk=None):
 def contract_files_page(request, action=None, pk=None):
     context = {
         'module_name': 'Contract Files',
-        'title': 'Records | Backend - Contract Files',
+        'title': 'Document Drive | Backend - Contract Files',
         'action': action,
         'breadcrumbs': ['Contract Files'],
         'form': None,
@@ -107,7 +107,7 @@ def contract_files_page(request, action=None, pk=None):
         elif action == "searching":
             if request.method == "GET":
                 keyword = request.GET.get('keyword')
-                context['data'] = Paginator(ContractFiles.objects.filter(Q(title__icontains=keyword)).order_by('-date_created'), 12).page(page_num)
+                context['data'] = Paginator(ContractFiles.objects.filter(Q(title__icontains=keyword)).order_by('-date_created'), 8).page(page_num)
                 context['keyword'] = keyword
                 return render(request, 'backend/contract_files/partial-file-upload.html', context)
             
@@ -132,7 +132,7 @@ def contract_files_page(request, action=None, pk=None):
                 if year:
                     queryset = queryset.filter(begin_date_completed__year=year)
 
-                context['data'] = Paginator(queryset.order_by('-date_created'), 12).page(page_num)
+                context['data'] = Paginator(queryset.order_by('-date_created'), 8).page(page_num)
 
                 keyword = []
                 if category_type_id:
@@ -152,23 +152,36 @@ def contract_files_page(request, action=None, pk=None):
         if action == "view" and request.method == "GET":
             context['breadcrumbs'] = ['Contract File', str(contract_files.id)]
             return render(request, 'backend/contract_files/update-files.html', context)
+        
+    
 
         elif action == "add-additional-file" and contract_files.created_by == request.user:
             if request.method == "POST":
                 document_type_id = request.POST.get('document_type_id')
                 title = request.POST.get('title')
                 description = request.POST.get('description')
-                fs = FileSystemStorage()
-                name = fs.save(request.FILES.get('document').name, request.FILES.get('document'))
-                additional_file = AdditionalFile.objects.create(document_type_id=document_type_id,
-                                                                            contract_files=contract_files,
-                                                                            file_directory=fs.url(name),
-                                                                            created_by=request.user)
-                file_update = FileUpdate.objects.create(title=f"{name}", remarks="document has been added by", created_by=request.user)
-                if additional_file:
-                        return JsonResponse({'statusMsg': 'Success'}, status=200)
+                document = request.FILES.get('document')
+                
+                if document and document.name.lower().endswith('.pdf'):
+                    fs = FileSystemStorage()
+                    try:
+                        name = fs.save(document.name, document)
+                        file_url = fs.url(name)
+                    except SuspiciousFileOperation:
+                        return JsonResponse({'statusMsg': 'Invalid file operation!'}, status=400)
+                    
+                    additional_file = AdditionalFile.objects.create(
+                        document_type_id=document_type_id,
+                        contract_files=contract_files,
+                        file_directory=file_url,
+                        created_by=request.user
+                    )
+                    
+                    FileUpdate.objects.create(title=f"{name}", remarks="document has been added by", created_by=request.user)
+                    
+                    return JsonResponse({'statusMsg': 'Success'}, status=200)
                 else:
-                    return JsonResponse({'statusMsg': 'Something went wrong!'}, status=404)
+                    return JsonResponse({'statusMsg': 'Invalid file format!'}, status=400)
         
                 
         elif action == "update-file" and request.method == "POST" and contract_files.created_by == request.user:
@@ -274,7 +287,7 @@ def contract_files_page(request, action=None, pk=None):
 
     context['status'] = ['Pending', 'Reviewed', 'Completed', 'Archived']
     context['data'] = ContractFiles.objects.all()
-    context['data'] = Paginator(ContractFiles.objects.order_by('-date_created'), 12).page(page_num)
+    context['data'] = Paginator(ContractFiles.objects.order_by('-date_created'), 8).page(page_num)
 
     template = 'backend/contract_files/files.html' if not request.GET.get('page') else \
     'backend/contract_files/partial-file-upload.html'
@@ -283,7 +296,7 @@ def contract_files_page(request, action=None, pk=None):
 def contract_files_reports(request,action=None, pk=None):
     context = {
         'module_name': 'Generate Report',
-        'title': 'Records | Backend - Generate Report',
+        'title': 'Document Drive | Backend - Generate Report',
         'action': action,
         'breadcrumbs': ['Generate Report'],
         'form': None,
@@ -300,7 +313,7 @@ def print(request):
 def case_files_page(request, action=None, pk=None):
     context = {
         'module_name': 'Case Files',
-        'title': 'Records | Backend - Case Files',
+        'title': 'Document Drive | Backend - Case Files',
         'action': action,
         'breadcrumbs': ['Case Files'],
         'form': None,
@@ -311,7 +324,7 @@ def case_files_page(request, action=None, pk=None):
 def system_logs(request, action=None, pk=None):
      context = {
         'module_name': 'System Logs',
-        'title': 'Records | Backend - System Logs',
+        'title': 'Document Drive | Backend - System Logs',
         'action': action,
         'breadcrumbs': ['System Logs'],
         'form': None,
@@ -363,27 +376,12 @@ def accounts_page(request, action=None, pk=None):
                         account.is_active = val
                         account.save()
                         return JsonResponse({'statusMsg': 'Success'}, status=200)
-                 
                     elif type == 'is_superuser':
                         account.is_superuser = val
                         account.save()
                         return JsonResponse({'statusMsg': 'Success'}, status=200)
-                    
-        elif action == "change-password" and request.method == "POST":
-            old_password = request.POST.get('old_password')
-            user = authenticate(email=request.user.email, password=old_password)
-            if user:
-                new_password = request.POST.get('new_password')
-                confirm_password = request.POST.get('confirm_password')
-
-                if new_password == confirm_password:
-                    user.set_password(f"{new_password}")
-                    user.save()
-                    return JsonResponse({'statusMsg': 'Success'}, status=200)
-            else:
-                return JsonResponse({'statusMsg': 'Unauthorized Access!'}, status=404)
 
         context['data'] = Account.objects.exclude(id=request.user.id)
-        return render(request, 'frontend/accounts/accounts.html')
+        return render(request, 'backend/accounts/accounts.html', context)
     except Exception as e:
         return JsonResponse({'statusMsg': str(e)}, status=404)

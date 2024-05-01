@@ -1,0 +1,29 @@
+{% extends 'layout/base.html' %}
+{% load tags %}
+{% block body %}
+<div class="row">
+   <div class="col-12">
+      <div class="card">
+         <div class="card-body" id="members-body">
+            {% include 'backend/accounts/partial-accounts.html' %}
+         </div>
+      </div>
+   </div>
+</div>
+<div class="modal fade" id="viewModal" role="dialog" aria-labelledby="exampleModalCenter" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+      <div class="modal-content" id="viewModalContent">
+
+      </div>
+   </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+
+$(document).ready(function(){
+      $('#accounts-tbl').DataTable();
+   });
+
+</script>
+{% endblock  %}

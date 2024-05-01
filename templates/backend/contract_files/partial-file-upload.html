@@ -6,14 +6,13 @@
             <div class="file-bottom">
                 <h6><b>{{ row.title|truncatewords:4 }}</b></h6>
                 <p>{{ row.category_type }} <br>
-                   {{ row.division_type|truncatewords:3 }} <br>
-                   {{ row.begin_date_completed }}
+                   {{ row.division_type|truncatechars:24 }} <br>
                   {% if row.status == 'Pending' %}
                   <p class="mb-1"><span class="badge badge-primary">{{row.status}}</span></p>
                   {% elif row.status == 'Reviewed' %}
                   <p class="mb-1"><span class="badge badge-danger">{{row.status}}</span></p>
                   {% elif row.status == 'Completed' %}
-                  <p class="mb-1"><span class="badge badge-success">{{row.status}}</span> | {% if row.time_until_archivable %}{{ row.time_until_archivable|format_timedelta|truncatechars:28 }}{% else %}Ready to Archive{% endif %}</p>
+                  <p class="mb-1"><span class="badge badge-success">{{row.status}}</span> | {% if row.time_until_archivable %}{{ row.time_until_archivable|format_timedelta|truncatechars:9 }}{% else %}Ready to Archive{% endif %}</p>
                   <!-- Only show the archivable message for 'Completed' status -->
                   {% elif row.status == 'Archived' %}
                   <p class="mb-1"><span class="badge badge-warning">{{row.status}}</span></p>

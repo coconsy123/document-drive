@@ -35,16 +35,16 @@ class ContractFiles(models.Model):
         """Check if 1 minute has passed since the file was completed."""
         if self.status != "Completed" or not self.begin_date_completed:
             return False
-        return timezone.now() > self.begin_date_completed + timedelta(days=160)
+        return timezone.now() > self.begin_date_completed + timedelta(days=180)
     
     def time_until_archivable(self):
         """Calculate the remaining time until the file can be archived."""
         if self.status != "Completed" or not self.begin_date_completed:
             return None
         time_passed = timezone.now() - self.begin_date_completed
-        if time_passed < timedelta(days=160):
+        if time_passed < timedelta(days=180):
             # Calculate the remaining time
-            remaining_time = timedelta(days=160) - time_passed
+            remaining_time = timedelta(days=180) - time_passed
             return remaining_time
         return None
     

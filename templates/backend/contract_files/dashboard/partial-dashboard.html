@@ -2,7 +2,7 @@
     {% for row in data  %}
     <li class="media"><span class="me-3 font-primary"><i class="fa fa-file-text"></i></span>
       <div class="align-self-center media-body">
-        <h6 class="mt-0">{{ row.title }} {{ row.remarks }} {% get_by row.created_by %}</h6>
+        <h6 class="mt-0">{{ row.title|truncatechars:30 }}<br>{{ row.remarks }} {% get_by row.created_by %}</h6>
         <ul class="dates">
           <li>{{ row.date_created }}</li>
           <li>{{ row.date_created|timesince }} ago</li>
