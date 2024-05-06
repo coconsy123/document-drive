@@ -52,6 +52,10 @@ def division_type():
     return DivisionType.objects.order_by('-date_created')
 
 @register.simple_tag
+def section_type():
+    return SectionType.objects.order_by('-date_created')
+
+@register.simple_tag
 def to_str(data):
     return str(data)
 
