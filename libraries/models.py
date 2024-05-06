@@ -37,6 +37,23 @@ class DocumentType(models.Model):
         managed = False
         db_table = 'tbl_documenttype'
 
+class SectionType(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    #division_type = models.ForeignKey('DivisionType', models.SET_NULL, null=True)
+    name = models.CharField(max_length=255)
+    created_by = models.ForeignKey(Account, models.RESTRICT, related_name="section_type_created_by")
+    date_created = models.DateTimeField(auto_now_add=True)
+    updated_by = models.ForeignKey(Account, models.RESTRICT, related_name="section_type_updated_by", null=True)
+    date_updated = models.DateTimeField(auto_now_add=False, null=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        managed = False
+        db_table = 'tbl_sectiontype'
+
 class DivisionType(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
@@ -52,6 +69,8 @@ class DivisionType(models.Model):
     class Meta:
         managed = False
         db_table = 'tbl_divisiontype'
+
+
 
 class CaseCategory(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include 
-from libraries.views import document_type_page, category_type_page, division_type_page
+from libraries.views import document_type_page, category_type_page, division_type_page, section_type_page
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -17,6 +17,10 @@ urlpatterns = [
     path('division_type/', division_type_page, name='libraries-division_type-page'),
     path('division_type/<slug:action>', division_type_page, name='libraries-division_type-page'),
     path('division_type/<slug:action>/<slug:pk>', division_type_page, name='libraries-division_type-page'),
+
+    path('section_type/', section_type_page, name='libraries-section_type-page'),
+    path('section_type/<slug:action>', section_type_page, name='libraries-section_type-page'),
+    path('section_type/<slug:action>/<slug:pk>', section_type_page, name='libraries-section_type-page'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

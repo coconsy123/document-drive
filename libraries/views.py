@@ -11,8 +11,8 @@ import datetime
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from django.core.exceptions import SuspiciousFileOperation
-from libraries.forms import DocumentTypeForm, CategoryTypeForm, DivisionTypeForm
-from libraries.models import DocumentType,CategoryType, DivisionType
+from libraries.forms import DocumentTypeForm, CategoryTypeForm, SectionTypeForm, DivisionTypeForm
+from libraries.models import DocumentType,CategoryType, DivisionType, SectionType
 import os
 
 # Create your views here.
@@ -207,6 +207,71 @@ def division_type_page(request, action=None, pk=None):
 
         template = 'libraries/division_type/index.html' if not request.GET.get('page') else \
             'libraries/division_type/partial_division_type.html'
+
+        return render(request, template, context)
+
+    except Exception as e:
+        return JsonResponse({'statusMsg': str(e)}, status=404)
+    
+@login_required
+def section_type_page(request, action=None, pk=None):
+    try:
+        page_num = 1 if not request.GET.get('page') else request.GET.get('page')
+        context = {
+            'module_name': 'Section Type',
+            'title': 'Records | Libraries - Section Type',
+            'action': action,
+            'breadcrumbs': None,
+            'form' : SectionTypeForm()
+        }
+        if action is None and pk is None:
+            if request.method == "POST":
+                with transaction.atomic():
+                    form = SectionTypeForm(request.POST)
+                    if form.is_valid():
+                        name = form.clean_sectiontype()
+                        is_active = form.cleaned_data['is_active']
+                        f = SectionType.objects.create(name=name, is_active=is_active, created_by=request.user)
+                        return JsonResponse({'statusMsg': 'Success'}, status=200)
+                    return JsonResponse({'statusMsg': form.errors}, status=404)
+
+        if action is not None and pk is None:
+            if action == "filter":
+                if request.method == "GET":
+                    keyword = request.GET.get('keyword')
+                    context['data'] = Paginator(SectionType.objects.filter(Q(name__icontains=keyword)).order_by('-date_created'), 10).page(page_num)
+                    context['keyword'] = keyword
+                    return render(request, 'libraries/section_type/partial_section_type.html', context)
+        
+        if action == "delete" and pk is not None:
+            if request.method == "POST":
+                sectiontype =SectionType.objects.filter(id=pk).first()
+                if sectiontype:
+                    sectiontype.delete()
+                return JsonResponse({'statusMsg': 'File deleted successfully'}, status=200)
+
+        if action is not None and pk is not None:
+            sectiontype = SectionType.objects.get(id=pk)
+            if action == "update":
+                if request.method == "POST":
+                    form = SectionTypeForm(request.POST, instance=sectiontype)
+                    if form.is_valid():
+                        update_form = form.save()
+                        update_form.date_updated = datetime.datetime.now()
+                        update_form.updated_by = request.user
+                        update_form.save()
+                        return JsonResponse({'statusMsg': 'Success'}, status=200)
+
+                context['form'] = SectionTypeForm(instance=sectiontype)
+                context['data'] = sectiontype 
+                return render(request, 'libraries/section_type/update_section_type.html', context)
+            
+    
+
+        context['data'] = Paginator(SectionType.objects.order_by('-date_created'), 10).page(page_num)
+
+        template = 'libraries/section_type/index.html' if not request.GET.get('page') else \
+            'libraries/section_type/partial_section_type.html'
 
         return render(request, template, context)
 

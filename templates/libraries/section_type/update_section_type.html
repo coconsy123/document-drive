@@ -1,0 +1,71 @@
+<form id="updateLibraryForm" action="{% url 'libraries-section_type-page' action='update' pk=data.id %}" method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+       <label>Name of Section Type <span class="text-danger">*</span></label>
+        {{ form.name }}
+    </div>
+   <div class="form-group mt-2">
+       <label>Is Active <span class="text-danger">*</span></label>
+       <br>
+        {{ form.is_active }}
+    </div>
+    <hr>
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-primary" type="submit" id="saveLibraryBtn">Save</button>
+        &nbsp;
+        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+    </div>
+</form>
+
+{% block script %}
+<script>
+$(document).ready(function(){
+    $('#updateLibraryForm').on('submit', (e) => {
+        e.preventDefault();
+        swal({
+            title: "Are you sure",
+            text: "Please Confirm",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((result) => {
+            if(result){
+                $('#saveLibraryBtn').html('<i class="fa fa-spin fa-spinner"></i> Saving...');
+                $('#saveLibraryBtn').attr('disabled', true);
+                const formData = $('#updateLibraryForm').serialize();
+                const url =  $('#updateLibraryForm').attr("action");
+                const type = $('#updateLibraryForm').attr("method");
+                $.ajax({
+                    type: type,
+                    url: url,
+                    data: formData,
+                    success: (result) => {
+                        swal({
+                            title: "Success",
+                            text: result['statusMsg'],
+                            icon: "success",
+                        }).then(() => {
+                            $('#saveLibraryBtn').html('Save');
+                            $('#saveLibraryBtn').attr('disabled', false);
+                        });
+                    },
+                    error: (result) => {
+                        const statusMsg = result['responseJSON']['statusMsg'];
+                        swal({
+                            title: "Error",
+                            text: statusMsg,
+                            icon: "error",
+                        }).then(() => {
+                            $('#saveLibraryBtn').html('Save');
+                            $('#saveLibraryBtn').attr('disabled', false);
+                        });
+
+                    }
+                });
+            }
+        });
+    })
+});
+</script>
+
+{% endblock %}
