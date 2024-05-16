@@ -4,6 +4,7 @@
 {% document_type as document_type %}
 {% category_type as category_type %}
 {% division_type as division_type %}
+{% section_type as section_type %}
 <div class="col-sm-12 col-xl-12">
     <div class="row">
        <div class="col-sm-12">
@@ -34,7 +35,18 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-3">
+                            <div class="mb-3">
+                                <label>Section<span class="text-danger">*</span></label>
+                                <select class="form-control select section_type " id="section_type" name="section_type"  required>
+                                    <option value="">-- Select Section --</option>
+                                    {% for row in section_type %}
+                                        <option value="{{ row.id }}">{{ row.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
                             <div class="mb-3">
                                 <label>Category Type <span class="text-danger">*</span></label>
                                 <select class="form-control select category_type " id="category_type" name="category_type" required>
@@ -138,15 +150,18 @@
                      formData.append("csrfmiddlewaretoken", "{{ csrf_token }}")
                      let division_type = $(".division_type").map(function(){
                         formData.append("division_type", this.value);
-                    });
-                    let category_type = $(".category_type").map(function(){
+                     });
+                     let section_type = $(".section_type").map(function(){
+                        formData.append("section_type", this.value);
+                     });
+                     let category_type = $(".category_type").map(function(){
                         formData.append("category_type", this.value);
-                    });
+                     });
                      let documents = $(".documents").map(function(){
-                         formData.append("documents", this.files[0]);
+                        formData.append("documents", this.files[0]);
                      });
                      let document_type_id = $(".document_type_id").map(function(){
-                         formData.append("document_type", this.value);
+                        formData.append("document_type", this.value);
                      });
  
                      $.ajax({

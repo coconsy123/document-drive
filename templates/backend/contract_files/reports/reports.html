@@ -1,102 +1,57 @@
 {% extends 'layout/base.html' %}
 {% load tags %}
 {% block body %}
-<div class="col-sm-12">
-    <div class="card">
-      <div class="card-body">
-        <table class="table table-bordered">
-            <center>
-                <h5>LEGAL SECTION</h5>
-                <h5>OFFICE OF THE REGIONAL DIRECTOR</h5>
-                <h5>FIELD OFFICE CARAGA</h5>
-                <p contenteditable="true">DSWD-GF-004 | REV 01 / 12 OCT 2021</p>
-            </center>
-            <br>
-            <thead>
-                <tr>
-                    <th colspan="8"><center>MONITORING REPORT FOR CONTRACT</center></th>
-                <tr>
-                <tr>
-                    <th colspan="8"><center>CALENDAR YEAR 2024</center></th>
-                <tr>
-                <tr>
-                    <th>PROPONENT/OBSU</th>
-                <tr>
-                <tr>
-                  <th>Contact No.</th>
-                  <th>Title</th>
-                  <th>Date of Contract</th>
-                  <th>Implementing Proponets/OBSU</th>
-                  <th>Type of Contract NEW/AMENDMENT/RENEWAL</th>
-                  <th>Date of Coverage</th>
-                  <th>Remaks</th>
-                  <th> <button type="button" id="addRow" class="btn btn-primary btn-xs mb-2">+</button></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <div class="input-group">
-                            <input class="form-control me-2" type="text" >
-                          </div>
-                      </td>
-                      <td>
-                        <div class="input-group">
-                            <input class="form-control me-2" type="text">
-                          </div>
-                      </td>
-                      <td>
-                        <div class="input-group">
-                            <input class="form-control me-2" type="Date" >
-                          </div>
-                      </td>
-                      <td>
-                        <div class="input-group">
-                            <input class="form-control me-2" type="text">
-                          </div>
-                      </td>
-                      <td>
-                        <div class="input-group">
-                            <input class="form-control me-2" type="text">
-                          </div>
-                      </td>
-                      <td>
-                        <div class="input-group">
-                            <input class="form-control me-2" type="Date">
-                          </div>
-                      </td>
-                      <td>
-                        <div class="input-group">
-                            <input class="form-control me-2" type="text">
-                          </div>
-                      </td>
-                      <td>
-                        <button type="button" class="btn btn-danger btn-xs removeRow">-</button>
-                      </td>
-                </tr>
-            </tbody>
-           <thead>
-              <tr>
-                <th>Date:</th>
-                <th>Prepared by:<br>Name:<br>Designation:</th>
-                <th colspan="2"></th>
-                <th>Noted by:<br>Name:<br>Designation:</th>
-                <th></th>
-                <th></th>
-                <th></th>
-              </tr>
-           </thead>
-        </table>
-        <br>
-        <div class="d-flex justify-content-end">
-          <button class="btn btn-primary" type="submit" id="saveLibraryBtn">Save</button>&nbsp;<button class="btn btn-success" type="button" id="printButton">Print</button>
-       </div>
+<div class="row">
+  <div class="col-xl-9 col-md-6 box-col-6">
+      <div class="file-content">
+        <div class="card">
+          <div class="card-body" id="libraryBody">
+            
+          </div>
+        </div>
       </div>
     </div>
+    <div class="col-3">
+      <div class="default-according style-1 faq-accordion job-accordion">
+         <div class="accordion" id="accordionExample">
+            <div class="card">
+               <div class="card-header" id="headingOne">
+                  <h2 class="mb-0">
+                     <button class="btn btn-link btn-block text-start" type="button" >Filter</button>
+                  </h2>
+               </div>
+               <div class="collapse show" id="collapseOne" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                  <div class="card-body filter-cards-view animate-chk">
+                     <form hx-get="{% url 'backend-contract-files-page' action='filter'%}" hx-trigger="submit" hx-target="#libraryBody" hx-indicator="#spinner">
+                        {% csrf_token %}
+                        <div class="job-filter mb-2">
+                           <label>Start Date:</label>
+                           <div class="faq-form">
+                            <input class="form-control" type="date" data-language="en">
+                           </div>
+                        </div>
+                        <div class="job-filter mb-2">
+                           <label>End Date:</label>
+                           <div class="faq-form">
+                            <input class="form-control" type="date" data-language="en">
+                           </div>
+                        </div>
+                         <br>
+                        <div class="d-flex justify-content-end">
+                           <button class="btn btn-primary text-center col-5" type="submit" >Generate Report</button>
+                        </div>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
 </div>
 {% endblock %}
 {% block script %}
 <script>
+  /*
   document.addEventListener('DOMContentLoaded', (event) => {
     const rowLimit = 13;
     const table = document.querySelector('.table tbody');
@@ -139,5 +94,7 @@
     });
 
   });
+  */
 </script>
+
 {% endblock  %}
