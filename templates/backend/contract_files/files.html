@@ -3,6 +3,7 @@
 {% block body %}
 {% category_type as category_type %}
 {% division_type as division_type %}
+{% section_type as section_type %}
 <div class="row">
     <div class="col-xl-9 col-md-6 box-col-6">
         <div class="file-content">
@@ -74,6 +75,17 @@
                             </select>
                              </div>
                           </div>
+                          <div class="job-filter mb-2">
+                           <label>Section</label>
+                           <div class="faq-form">
+                            <select class="form-control select " id="section_type" name="section_type">
+                               <option value="">-- Select Section --</option>
+                              {% for row in section_type %}
+                                  <option value="{{ row.id }}">{{ row.name }}</option>
+                              {% endfor %}
+                          </select>
+                           </div>
+                        </div>
                           <!-- Status Filter Section -->
                            <div class="job-filter mb-2">
                               <label>Status</label>

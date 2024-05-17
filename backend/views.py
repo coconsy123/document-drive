@@ -117,7 +117,7 @@ def contract_files_page(request, action=None, pk=None):
             if request.method == "GET":
                 category_type_id = request.GET.get('category_type') if request.GET.get('category_type') != "None" else None
                 division_type_id = request.GET.get('division_type') if request.GET.get('division_type') != "None" else None
-                
+                section_type_id = request.GET.get('section_type') if request.GET.get('section_type') != "None" else None
                 status = request.GET.get('status') if request.GET.get('status') != "None" and request.GET.get('status') != "" else None
                 year = int(request.GET.get('year')) if request.GET.get('year') and request.GET.get('year').isdigit() else None
 
@@ -128,6 +128,9 @@ def contract_files_page(request, action=None, pk=None):
 
                 if division_type_id:
                     queryset = queryset.filter(division_type_id=division_type_id)
+
+                if section_type_id:
+                    queryset = queryset.filter(section_type_id=section_type_id)
 
                 if status:
                     queryset = queryset.filter(status=status)
@@ -142,6 +145,8 @@ def contract_files_page(request, action=None, pk=None):
                     keyword.append(f"category_type={category_type_id}")
                 if division_type_id:
                     keyword.append(f"division_type={division_type_id}")
+                if section_type_id:
+                    keyword.append(f"section_type={section_type_id}")
                 if status:
                     keyword.append(f"status={status}")
                 if year:
@@ -155,8 +160,6 @@ def contract_files_page(request, action=None, pk=None):
         if action == "view" and request.method == "GET":
             context['breadcrumbs'] = ['Contract File', str(contract_files.id)]
             return render(request, 'backend/contract_files/update-files.html', context)
-        
-    
 
         elif action == "add-additional-file" and contract_files.created_by == request.user:
             if request.method == "POST":

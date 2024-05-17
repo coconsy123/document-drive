@@ -6,6 +6,7 @@
   <div class="col-xl-9 col-md-6 box-col-6">
       <div class="file-content">
         <div class="card">
+
           <div class="card-body file-manager" id="libraryBody">
             <div class="layout-front" style="border: 1px solid black;">
               <table class="table table-bordered table-condensed">
@@ -23,6 +24,8 @@
                 </tr>
             </table>
             </div>
+          <div class="card-body" id="libraryBody">
+            
           </div>
         </div>
       </div>
@@ -49,12 +52,19 @@
                         <div class="job-filter mb-2">
                            <label>End Date:</label>
                            <div class="faq-form">
+
                             <input type="date" class="form-control" id="begin-date-completed">
                            </div>
                         </div>   
                          <br>
                         <div class="d-flex justify-content-end">
                            <button class="btn btn-primary text-center col-5" type="submit" >Filter</button>
+                            <input class="form-control" type="date" data-language="en">
+                           </div>
+                        </div>
+                         <br>
+                        <div class="d-flex justify-content-end">
+                           <button class="btn btn-primary text-center col-5" type="submit" >Generate Report</button>
                         </div>
                      </form>
                   </div>
@@ -110,6 +120,9 @@
     });
 
   });
-  *
+
+  */
+
 </script>
+
 {% endblock  %}

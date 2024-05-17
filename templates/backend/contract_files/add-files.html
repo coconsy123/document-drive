@@ -5,6 +5,7 @@
 {% category_type as category_type %}
 {% division_type as division_type %}
 {% section_type as section_type%}
+
 <div class="col-sm-12 col-xl-12">
     <div class="row">
        <div class="col-sm-12">
@@ -150,18 +151,18 @@
                      formData.append("csrfmiddlewaretoken", "{{ csrf_token }}")
                      let division_type = $(".division_type").map(function(){
                         formData.append("division_type", this.value);
-                    });
-                    let section_type = $(".section_type").map(function(){
+                     });
+                     let section_type = $(".section_type").map(function(){
                         formData.append("section_type", this.value);
-                    });
-                    let category_type = $(".category_type").map(function(){
+                     });
+                     let category_type = $(".category_type").map(function(){
                         formData.append("category_type", this.value);
-                    });
+                     });
                      let documents = $(".documents").map(function(){
-                         formData.append("documents", this.files[0]);
+                        formData.append("documents", this.files[0]);
                      });
                      let document_type_id = $(".document_type_id").map(function(){
-                         formData.append("document_type", this.value);
+                        formData.append("document_type", this.value);
                      });
  
                      $.ajax({
