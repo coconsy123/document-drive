@@ -12,7 +12,7 @@ from datetime import datetime
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from django.core.exceptions import SuspiciousFileOperation
-from libraries.models import DocumentType,  CategoryType, DivisionType
+from libraries.models import DocumentType,  CategoryType, DivisionType, SectionType
 from backend.models import ContractFiles, FileUpdate, AdditionalFile
 import os
 import urllib.parse
@@ -73,8 +73,10 @@ def contract_files_page(request, action=None, pk=None):
                     description = request.POST.get('description')
                     category_type_id = request.POST.get('category_type')
                     division_type_id = request.POST.get('division_type')
+                    section_type_id = request.POST.get('section_type')
                     category_type = CategoryType.objects.filter(id=category_type_id).first()
                     division_type = DivisionType.objects.filter(id=division_type_id).first()
+                    section_type = SectionType.objects.filter(id=section_type_id).first()
                     document_type = request.POST.getlist('document_type')
                     remarks = request.POST.get('remarks')
                     documents = request.FILES.getlist('documents')
@@ -86,7 +88,7 @@ def contract_files_page(request, action=None, pk=None):
                         for dti, d in zip(document_type, documents)
                     ]
 
-                    contract_files = ContractFiles.objects.create(title=title,description=description,category_type=category_type,division_type=division_type,created_by=request.user, remarks=remarks, status="Pending")
+                    contract_files = ContractFiles.objects.create(title=title,description=description,category_type=category_type,division_type=division_type,section_type=section_type,created_by=request.user, remarks=remarks, status="Pending")
 
                     for row in document_type_data:
                         fs = FileSystemStorage()
@@ -115,6 +117,7 @@ def contract_files_page(request, action=None, pk=None):
             if request.method == "GET":
                 category_type_id = request.GET.get('category_type') if request.GET.get('category_type') != "None" else None
                 division_type_id = request.GET.get('division_type') if request.GET.get('division_type') != "None" else None
+                
                 status = request.GET.get('status') if request.GET.get('status') != "None" and request.GET.get('status') != "" else None
                 year = int(request.GET.get('year')) if request.GET.get('year') and request.GET.get('year').isdigit() else None
 
@@ -191,15 +194,17 @@ def contract_files_page(request, action=None, pk=None):
                 remarks = request.POST.get('remarks')
                 category_type_id = request.POST.get('category_type_id')
                 division_type_id = request.POST.get('division_type_id')
-                
+                section_type_id = request.POST.get('section_type_id')
                 category_type = CategoryType.objects.filter(id=category_type_id).first()
                 division_type = DivisionType.objects.filter(id=division_type_id).first()
+                section_type = SectionType.objects.filter(id=section_type_id).first()
 
                 contract_files.title = title
                 contract_files.description = description
                 contract_files.remarks = remarks
                 contract_files.category_type = category_type
                 contract_files.division_type = division_type
+                contract_files.section_type = section_type
                 contract_files.date_updated = timezone.now()
                 contract_files.updated_by = request.user
                 contract_files.save()

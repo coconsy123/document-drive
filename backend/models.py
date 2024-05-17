@@ -20,6 +20,7 @@ class ContractFiles(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     division_type = models.ForeignKey(DivisionType, models.SET_NULL, null=True)
+    section_type = models.ForeignKey(SectionType, models.SET_NULL, null=True)
     category_type = models.ForeignKey(CategoryType, models.SET_NULL, null=True)
     created_by = models.ForeignKey(Account, models.RESTRICT, related_name="file_upload_created_by")
     status = models.CharField(max_length=255, choices=FILE_STATUS_CHOICES)
