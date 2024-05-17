@@ -198,7 +198,6 @@ def contract_files_page(request, action=None, pk=None):
                 category_type_id = request.POST.get('category_type_id')
                 division_type_id = request.POST.get('division_type_id')
                 section_type_id = request.POST.get('section_type_id')
-                
                 category_type = CategoryType.objects.filter(id=category_type_id).first()
                 division_type = DivisionType.objects.filter(id=division_type_id).first()
                 section_type = SectionType.objects.filter(id=section_type_id).first()
