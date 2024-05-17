@@ -4,28 +4,56 @@
 {% block body %}
 <div class="row">
   <div class="col-xl-9 col-md-6 box-col-6">
-      <div class="file-content">
-        <div class="card">
-
-          <div class="card-body file-manager" id="libraryBody">
-            <div class="layout-front" style="border: 1px solid black;">
-              <table class="table table-bordered table-condensed">
-                <tr>
-                    <th width="15%"><img src="{% static 'images/dswd.png' %}" width="90%"></th>
-                    <th width="15%"><img src="{% static 'images/bagong_pilipinas.png' %}" width="90%"></th>
-                    <th>
-                        <center>
-                        <h5 style="margin-right: 110px;"><strong>LEGAL SECTION<br>
-                          OFFICE OF THE REGIONAL DIRECTOR<br>
-                          FIELD OFFICE CARAGA</strong></h5>
-                          <p style="margin-right: 110px;">DSWD-GF-004 | REV 01 / 12 OCT 2021</p>
-                        <center>
-                    </th>
-                </tr>
+      <div class="card">
+        <div class="card-body" id="libraryBody">
+          <div class="layout-front">
+            <table class="table table-bordered table-condensed">
+              <tr>
+                  <th width="15%"><img src="{% static 'images/dswd.png' %}" width="90%"></th>
+                  <th width="15%"><img src="{% static 'images/bagong_pilipinas.png' %}" width="90%"></th>
+                  <th>
+                    <center>
+                    <h5 style="margin-right: 110px;"><strong>LEGAL SECTION<br>
+                      OFFICE OF THE REGIONAL DIRECTOR<br>
+                      FIELD OFFICE CARAGA</strong></h5>
+                      <p style="margin-right: 110px;">DSWD-GF-004 | REV 01 / 12 OCT 2021</p>
+                    <center>
+                  </th>
+              </tr>
             </table>
-            </div>
-          <div class="card-body" id="libraryBody">
-            
+          </div>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <tr style="border: 1px solid black;">
+                  <th colspan="6" style="border: 1px solid black;"><center><strong>MONITORING REPORT FOR CONTRACT</strong><center></th>
+              </tr>
+              <tr style="border: 1px solid black;">
+                <th colspan="6" style="border: 1px solid black;"><center><strong>CALENDAR YEAR 2024</strong><center></th>
+              </tr>
+              <tr style="border: 1px solid black;">
+                <th colspan="6" style="border: 1px solid black;"><strong>PROPONENTS OBSU</strong></th>
+              </tr>
+              <tr style="border: 1px solid black;">
+                <th style="border: 1px solid black;"><strong>TITLE</strong></th>
+                <th style="border: 1px solid black;"><strong>DATE OF CONTRACT</strong></th>
+                <th style="border: 1px solid black;"><strong>IMPLEMENTING PROPONENT/OBSU</strong></th>
+                <th style="border: 1px solid black;"><strong>TYPE OF CONTRACT</strong></th>
+                <th style="border: 1px solid black;"><strong>DATE OF COVERAGE</strong></th>
+                <th style="border: 1px solid black;"><strong>REMARKS</strong></th>
+              </tr>
+              <tbody>
+                {% for row in data %}
+                  <tr>
+                    <td style="border: 1px solid black;">asd</td>
+                    <td style="border: 1px solid black;">{{ row.date_added }}</td>
+                    <td style="border: 1px solid black;">{{ row.title }}</td>
+                    <td style="border: 1px solid black;">{{ row.title }}</td>
+                    <td style="border: 1px solid black;">{{ row.title }}</td>
+                    <td style="border: 1px solid black;">{{ row.title }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -46,20 +74,13 @@
                         <div class="job-filter mb-2">
                            <label>Start Date:</label>
                            <div class="faq-form">
-                            <input type="date" class="form-control" id="begin-date-completed">
+                            <input type="date" class="form-control" id="start-date">
                            </div>
                         </div>
                         <div class="job-filter mb-2">
                            <label>End Date:</label>
                            <div class="faq-form">
-
-                            <input type="date" class="form-control" id="begin-date-completed">
-                           </div>
-                        </div>   
-                         <br>
-                        <div class="d-flex justify-content-end">
-                           <button class="btn btn-primary text-center col-5" type="submit" >Filter</button>
-                            <input class="form-control" type="date" data-language="en">
+                            <input type="date" class="form-control" id="end-date">
                            </div>
                         </div>
                          <br>
@@ -74,55 +95,5 @@
       </div>
    </div>
 </div>
+
 {% endblock %}
-{% block script %}
-<script>
-  /*
-  document.addEventListener('DOMContentLoaded', (event) => {
-    const rowLimit = 13;
-    const table = document.querySelector('.table tbody');
-
-   
-
-    function addRow() {
-      let rowCount = table.rows.length;
-      if (rowCount < rowLimit) {
-        const newRow = table.insertRow();
-        for (let i = 0; i < 7; i++) {
-          const newCell = newRow.insertCell();
-          const input = document.createElement('input');
-          input.type = i === 2 || i === 5 ? 'date' : 'text'; // Assuming cells 3 and 6 are dates
-          input.className = 'form-control me-2';
-          newCell.appendChild(input);
-        }
-        const removeCell = newRow.insertCell();
-        const removeButton = document.createElement('button');
-        removeButton.innerHTML = '&minus;'; // Using HTML minus symbol
-        removeButton.className = 'btn btn-danger btn-xs removeRow';
-        removeButton.onclick = removeRow;
-        removeCell.appendChild(removeButton);
-      } else {
-        alert('Maximum of 13 rows reached');
-      }
-    }
-
-    function removeRow(e) {
-      e.target.closest('tr').remove();
-    }
-
-    document.getElementById('addRow').addEventListener('click', addRow);
-
-    // Attach removeRow event to existing remove button
-    document.querySelector('.removeRow').addEventListener('click', removeRow);
-
-    document.getElementById('printButton').addEventListener('click', function() {
-      window.location.href = '{% url "print-report" %}';
-    });
-
-  });
-
-  */
-
-</script>
-
-{% endblock  %}
