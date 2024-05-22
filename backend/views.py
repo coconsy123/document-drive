@@ -153,13 +153,42 @@ def contract_files_page(request, action=None, pk=None):
                     keyword.append(f"year={year}")
                 context['keyword'] = "&".join(keyword)
                 return render(request, 'backend/contract_files/partial-file-upload.html', context)
-                
+            
+       
     elif action is not None and pk is not None:
         contract_files = ContractFiles.objects.get(id=pk)
         context['data'] = contract_files 
         if action == "view" and request.method == "GET":
             context['breadcrumbs'] = ['Contract File', str(contract_files.id)]
             return render(request, 'backend/contract_files/update-files.html', context)
+        
+        elif action == "update-file" and request.method == "POST" and contract_files.created_by == request.user:
+            try:
+                title = request.POST.get('title')
+                description = request.POST.get('description')
+                remarks = request.POST.get('remarks')
+                category_type_id = request.POST.get('category_type_id')
+                division_type_id = request.POST.get('division_type_id')
+                section_type_id = request.POST.get('section_type_id')
+                category_type = CategoryType.objects.filter(id=category_type_id).first()
+                division_type = DivisionType.objects.filter(id=division_type_id).first()
+                section_type = SectionType.objects.filter(id=section_type_id).first()
+
+                contract_files.title = title
+                contract_files.description = description
+                contract_files.remarks = remarks
+                contract_files.category_type = category_type
+                contract_files.division_type = division_type
+                contract_files.section_type = section_type
+                contract_files.date_updated = timezone.now()
+                contract_files.updated_by = request.user
+                contract_files.save()
+                file_update = FileUpdate.objects.create(title=f"{contract_files.title}", remarks="file has been updated by", created_by=request.user)
+
+                return JsonResponse({'statusMsg': 'Success'}, status=200)
+            except Exception as e: 
+                    return JsonResponse({'statusMsg': 'File not found'}, status=404)
+
 
         elif action == "add-additional-file" and contract_files.created_by == request.user:
             if request.method == "POST":
@@ -188,36 +217,31 @@ def contract_files_page(request, action=None, pk=None):
                     return JsonResponse({'statusMsg': 'Success'}, status=200)
                 else:
                     return JsonResponse({'statusMsg': 'Invalid file format!'}, status=400)
-        
                 
-        elif action == "update-file" and request.method == "POST" and contract_files.created_by == request.user:
+        elif action == "update-additional-file" and request.method == "POST" and contract_files.created_by == request.user:
             try:
-                title = request.POST.get('title')
-                description = request.POST.get('description')
-                remarks = request.POST.get('remarks')
-                category_type_id = request.POST.get('category_type_id')
-                division_type_id = request.POST.get('division_type_id')
-                section_type_id = request.POST.get('section_type_id')
-                category_type = CategoryType.objects.filter(id=category_type_id).first()
-                division_type = DivisionType.objects.filter(id=division_type_id).first()
-                section_type = SectionType.objects.filter(id=section_type_id).first()
+                file_directory = None
+                additional_file = None
+                if request.FILES.get('document'):
+                    fs = FileSystemStorage()
+                    name = fs.save(request.FILES.get('document').name, request.FILES.get('document'))
+                    file_directory = fs.url(name)
+                    additional_file = AdditionalFile.objects.filter(
+                        id=request.method.get('additional_file_id')).update(
+                        document_type_id=request.POST.get('document_type_id'), file_directory=file_directory)
+                else:
+                    additional_file = AdditionalFile.objects.filter(id=request.POST.get('additional_file_id')).update(document_type_id=request.POST.get('document_type_id'))
 
-                contract_files.title = title
-                contract_files.description = description
-                contract_files.remarks = remarks
-                contract_files.category_type = category_type
-                contract_files.division_type = division_type
-                contract_files.section_type = section_type
-                contract_files.date_updated = timezone.now()
-                contract_files.updated_by = request.user
-                contract_files.save()
-                file_update = FileUpdate.objects.create(title=f"{contract_files.title}", remarks="file has been updated by", created_by=request.user)
-
-                return JsonResponse({'statusMsg': 'Success'}, status=200)
-            except Exception as e: 
-                    return JsonResponse({'statusMsg': 'File not found'}, status=404)
-            
-            
+                
+                if additional_file is not None and additional_file > 0:
+                    return JsonResponse({'statusMsg': 'Attachment Successfully Updated!', 'file_directory': file_directory}, status=200)
+                
+                else:
+                    return JsonResponse({'statusMsg': 'Something went wrong!'}, status=404)
+                
+            except Exception as e:
+                return JsonResponse({'statusMsg': str(e)}, status=404)
+               
         elif action == "delete-additional-file" in request.path and request.method == "POST" and contract_files.created_by == request.user:
             additional_file_id = request.POST.get('additional_file_id')
             additional_file = AdditionalFile.objects.filter(id=additional_file_id).first()
@@ -243,30 +267,6 @@ def contract_files_page(request, action=None, pk=None):
             else:
                 return JsonResponse({'statusMsg': 'Additional file not found'}, status=404)
 
-             
-        elif action == "update-additional-file" and request.method == "POST" and contract_files.created_by == request.user:
-            try:
-                file_directory = None
-                additional_file = None
-                if request.FILES.get('document'):
-                    fs = FileSystemStorage()
-                    name = fs.save(request.FILES.get('document').name, request.FILES.get('document'))
-                    file_directory = fs.url(name)
-                    additional_file = AdditionalFile.objects.filter(
-                        id=request.method.get('additional_file_id')).update(
-                        document_type_id=request.POST.get('document_type_id'), file_directory=file_directory)
-                else:
-                    additional_file = AdditionalFile.objects.filter(id=request.POST.get('additional_file_id')).update(document_type_id=request.POST.get('document_type_id'))
-
-                
-                if additional_file is not None and additional_file > 0:
-                    return JsonResponse({'statusMsg': 'Attachment Successfully Updated!', 'file_directory': file_directory}, status=200)
-                
-                else:
-                    return JsonResponse({'statusMsg': 'Something went wrong!'}, status=404)
-                
-            except Exception as e:
-                return JsonResponse({'statusMsg': str(e)}, status=404)
             
         elif action in ["file-reviewed", "file-completed", "file-archived"]:
             if action == "file-completed":
@@ -309,7 +309,9 @@ def contract_files_reports(request,action=None, pk=None):
         'breadcrumbs': ['Generate Report'],
         'form': None,
         'keyword': None,
+        'data': ContractFiles.objects.all()
     }
+    
 
     return render(request, 'backend/contract_files/reports/reports.html', context )
 
