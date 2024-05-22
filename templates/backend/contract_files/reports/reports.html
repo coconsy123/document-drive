@@ -24,32 +24,34 @@
           </div>
           <div class="table-responsive">
             <table class="table table-bordered">
-              <tr style="border: 1px solid black;">
-                  <th colspan="6" style="border: 1px solid black;"><center><strong>MONITORING REPORT FOR CONTRACT</strong><center></th>
-              </tr>
-              <tr style="border: 1px solid black;">
-                <th colspan="6" style="border: 1px solid black;"><center><strong>CALENDAR YEAR 2024</strong><center></th>
-              </tr>
-              <tr style="border: 1px solid black;">
-                <th colspan="6" style="border: 1px solid black;"><strong>PROPONENTS OBSU</strong></th>
-              </tr>
-              <tr style="border: 1px solid black;">
-                <th style="border: 1px solid black;"><strong>TITLE</strong></th>
-                <th style="border: 1px solid black;"><strong>DATE OF CONTRACT</strong></th>
-                <th style="border: 1px solid black;"><strong>IMPLEMENTING PROPONENT/OBSU</strong></th>
-                <th style="border: 1px solid black;"><strong>TYPE OF CONTRACT</strong></th>
-                <th style="border: 1px solid black;"><strong>DATE OF COVERAGE</strong></th>
-                <th style="border: 1px solid black;"><strong>REMARKS</strong></th>
-              </tr>
+              <thead>
+                <tr style="border: 1px solid black;">
+                    <th colspan="6" style="border: 1px solid black;"><center><strong>MONITORING REPORT FOR CONTRACT</strong><center></th>
+                </tr>
+                <tr style="border: 1px solid black;">
+                  <th colspan="6" style="border: 1px solid black;"><center><strong>CALENDAR YEAR 2024</strong><center></th>
+                </tr>
+                <tr style="border: 1px solid black;">
+                  <th colspan="6" style="border: 1px solid black;"><strong>PROPONENTS OBSU</strong></th>
+                </tr>
+                <tr style="border: 1px solid black;">
+                  <th style="text-align:center; border: 1px solid black;"><strong>TITLE</strong></th>
+                  <th style="text-align:center; border: 1px solid black;"><strong>DATE OF CONTRACT</strong></th>
+                  <th style="text-align:center; border: 1px solid black;"><strong>IMPLEMENTING PROPONENT/OBSU</strong></th>
+                  <th style="text-align:center; border: 1px solid black;"><strong>TYPE OF CONTRACT</strong></th>
+                  <th style="text-align:center; border: 1px solid black;"><strong>DATE OF COVERAGE</strong></th>
+                  <th style="text-align:center; border: 1px solid black;"><strong>REMARKS</strong></th>
+                </tr>
+              </thead>
               <tbody>
                 {% for row in data %}
                   <tr>
-                    <td style="border: 1px solid black;">asd</td>
-                    <td style="border: 1px solid black;">{{ row.date_added }}</td>
                     <td style="border: 1px solid black;">{{ row.title }}</td>
-                    <td style="border: 1px solid black;">{{ row.title }}</td>
-                    <td style="border: 1px solid black;">{{ row.title }}</td>
-                    <td style="border: 1px solid black;">{{ row.title }}</td>
+                    <td style="border: 1px solid black;">{{ row.date_created }}</td>
+                    <td style="border: 1px solid black;">{{ row.section_type }}</td>
+                    <td style="border: 1px solid black;">{{ row.document_type_name }}</td>
+                    <td style="border: 1px solid black;"></td>
+                    <td style="border: 1px solid black;">{{ row.remarks }}</td>
                   </tr>
                 {% endfor %}
               </tbody>

@@ -20,7 +20,7 @@
                 <td class="text-uppercase">{% get_by row.updated_by %}</td>
                 <td>{% if row.date_updated %} {{row.date_updated}} {% endif %}</td>
                 <td style="text-align: center;">{% get_is_active row.is_active %}</td>
-               
+            </tr>
         {% endfor %}
     </tbody>
 </table>

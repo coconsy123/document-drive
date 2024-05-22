@@ -60,7 +60,12 @@ class ContractFiles(models.Model):
     
     def document_type(self):
         return AdditionalFile.objects.filter(contract_files_id=self.id).order_by('-date_created')
-
+   
+    
+    def document_type_name(self):
+        additional_file = AdditionalFile.objects.filter(contract_files_id=self.id).order_by('-date_created').first()
+        return additional_file.document_type.name if additional_file else None
+    
     def status_color(self):
         if self.status == "Pending":
             return f'<span class="badge badge-primary">{self.status.upper()}</span>'
