@@ -47,15 +47,33 @@
                 {% for row in data %}
                   <tr>
                     <td style="border: 1px solid black;">{{ row.title }}</td>
-                    <td style="border: 1px solid black;">{{ row.date_created }}</td>
-                    <td style="border: 1px solid black;">{{ row.section_type }}</td>
-                    <td style="border: 1px solid black;">{{ row.document_type_name }}</td>
-                    <td style="border: 1px solid black;"></td>
+                    <td style="text-align:center; border: 1px solid black;">{{ row.date_created }}</td>
+                    <td style="text-align:center; border: 1px solid black;">{{ row.section_type }}</td>
+                    <td style="text-align:center; border: 1px solid black;">{{ row.document_type_name }}</td>
+                    <td style="text-align:center; border: 1px solid black;"></td>
                     <td style="border: 1px solid black;">{{ row.remarks }}</td>
                   </tr>
                 {% endfor %}
               </tbody>
             </table>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th style="border: 1px solid black;" rowspan="3"><strong>Date:</strong></th>
+                <th style="border: 1px solid black;"><strong>Prepared By:<br>
+                  Name:<br>
+                  Designation:
+                </strong>
+                </th>
+                <th style="border: 1px solid black;"><strong>Noted By:<br>
+                  Name:<br>
+                  Designation:
+                </strong>
+                </th>
+              </tr>
+            </thead>
+          </table>
+          <br>
           </div>
         </div>
       </div>
