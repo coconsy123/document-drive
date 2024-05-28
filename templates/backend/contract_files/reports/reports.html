@@ -22,7 +22,6 @@
               </tr>
             </table>
           </div>
-          <div class="table-responsive">
             <table class="table table-bordered">
               <thead>
                 <tr style="border: 1px solid black;">
@@ -55,26 +54,14 @@
                   </tr>
                 {% endfor %}
               </tbody>
+              <tfoot>
+                <tr>
+                  <th style="border: 1px solid black;" colspan="2">Date: <p contenteditable="true"></p></th>
+                  <th style="border: 1px solid black;" colspan="2" contenteditable="true">Prepared By<br>Name: <strong>{{ request.user.full_name }}</strong><br>Designation: </th>
+                  <th style="border: 1px solid black;" colspan="2">Noted By<br>Name: <strong>{{ request.user.full_name }}</strong><br>Designation: </th>
+                </tr>
+              </tfoot>
             </table>
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th style="border: 1px solid black;" rowspan="3"><strong>Date:</strong></th>
-                <th style="border: 1px solid black;"><strong>Prepared By:<br>
-                  Name:<br>
-                  Designation:
-                </strong>
-                </th>
-                <th style="border: 1px solid black;"><strong>Noted By:<br>
-                  Name:<br>
-                  Designation:
-                </strong>
-                </th>
-              </tr>
-            </thead>
-          </table>
-          <br>
-          </div>
         </div>
       </div>
     </div>
