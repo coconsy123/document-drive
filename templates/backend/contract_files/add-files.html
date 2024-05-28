@@ -25,6 +25,20 @@
                         <textarea class="form-control" id="description" rows="8" name="description" required></textarea>
                     </div>
                     <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <label>Date of Coverage(Start)</label>
+                                <input type="date" class="form-control" name="start_date_coverage" id="start_date_coverage">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <label>Date of Coverage(End)</label>
+                                <input type="date" class="form-control" name="end_date_coverage" id="end_date_coverage">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-sm-4">
                             <div class="mb-3">
                                 <label>Division<span class="text-danger">*</span></label>
@@ -148,6 +162,8 @@
                      formData.append("title", $("#title").val())
                      formData.append("description", $("#description").val())
                      formData.append("remarks", $("#remarks").val())
+                     formData.append("start_date_coverage", $("#start_date_coverage").val())
+                     formData.append("end_date_coverage", $("#end_date_coverage").val())
                      formData.append("csrfmiddlewaretoken", "{{ csrf_token }}")
                      let division_type = $(".division_type").map(function(){
                         formData.append("division_type", this.value);
