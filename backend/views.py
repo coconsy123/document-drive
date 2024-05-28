@@ -79,6 +79,8 @@ def contract_files_page(request, action=None, pk=None):
                     section_type = SectionType.objects.filter(id=section_type_id).first()
                     document_type = request.POST.getlist('document_type')
                     remarks = request.POST.get('remarks')
+                    start_date_coverage = request.POST.get('start_date_coverage')
+                    end_date_coverage = request.POST.get('end_date_coverage')
                     documents = request.FILES.getlist('documents')
                     document_type_data = [
                         {
@@ -88,7 +90,7 @@ def contract_files_page(request, action=None, pk=None):
                         for dti, d in zip(document_type, documents)
                     ]
 
-                    contract_files = ContractFiles.objects.create(title=title,description=description,category_type=category_type,division_type=division_type,section_type=section_type,created_by=request.user, remarks=remarks, status="Pending")
+                    contract_files = ContractFiles.objects.create(title=title,description=description,category_type=category_type,division_type=division_type,section_type=section_type,created_by=request.user, remarks=remarks,start_date_coverage=start_date_coverage,end_date_coverage=end_date_coverage, status="Pending")
 
                     for row in document_type_data:
                         fs = FileSystemStorage()
@@ -167,6 +169,8 @@ def contract_files_page(request, action=None, pk=None):
                 title = request.POST.get('title')
                 description = request.POST.get('description')
                 remarks = request.POST.get('remarks')
+                start_date_coverage = request.POST.get('start_date_coverage')
+                end_date_coverage = request.POST.get('end_date_coverage')
                 category_type_id = request.POST.get('category_type_id')
                 division_type_id = request.POST.get('division_type_id')
                 section_type_id = request.POST.get('section_type_id')
@@ -177,6 +181,8 @@ def contract_files_page(request, action=None, pk=None):
                 contract_files.title = title
                 contract_files.description = description
                 contract_files.remarks = remarks
+                contract_files.start_date_coverage = start_date_coverage
+                contract_files.end_date_coverage = end_date_coverage
                 contract_files.category_type = category_type
                 contract_files.division_type = division_type
                 contract_files.section_type = section_type
