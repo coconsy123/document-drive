@@ -90,7 +90,7 @@ def contract_files_page(request, action=None, pk=None):
                         for dti, d in zip(document_type, documents)
                     ]
 
-                    contract_files = ContractFiles.objects.create(title=title,description=description,category_type=category_type,division_type=division_type,section_type=section_type,created_by=request.user, remarks=remarks,start_date_coverage=start_date_coverage,end_date_coverage=end_date_coverage, status="Pending")
+                    contract_files = ContractFiles.objects.create(title=title,description=description,category_type=category_type,division_type=division_type,section_type=section_type,created_by=request.user, remarks=remarks, start_date_coverage=start_date_coverage, end_date_coverage=end_date_coverage, status="Pending")
 
                     for row in document_type_data:
                         fs = FileSystemStorage()
@@ -181,8 +181,8 @@ def contract_files_page(request, action=None, pk=None):
                 contract_files.title = title
                 contract_files.description = description
                 contract_files.remarks = remarks
-                contract_files.start_date_coverage = start_date_coverage
-                contract_files.end_date_coverage = end_date_coverage
+                contract_files.start_date_coverage = start_date_coverage.strftime('%Y-%m-%d')
+                contract_files.end_date_coverage = end_date_coverage.strftime('%Y-%m-%d')
                 contract_files.category_type = category_type
                 contract_files.division_type = division_type
                 contract_files.section_type = section_type
