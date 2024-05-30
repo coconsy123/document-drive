@@ -30,8 +30,8 @@ class ContractFiles(models.Model):
     begin_date_completed = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     remarks = models.TextField()
-    start_date_coverage = models.DateTimeField(null=True, blank=True)
-    end_date_coverage = models.DateTimeField(null=True, blank=True)
+    date_of_coverage = models.CharField(max_length=255)
+    
     
 
     def is_archivable(self):
