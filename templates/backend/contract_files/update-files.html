@@ -65,21 +65,15 @@
                         {% csrf_token %}
                         <div class="mb-3">
                             <label class="col-form-label">Title <span class="text-danger">*</span></label>
-                            <input class="form-control f-w-900 text-dark" type="text" name="title" placeholder="Enter project title" value="{{ data.title }}" oninput="this.value = this.value.toUpperCase()" required>
+                            <input class="form-control f-w-900 text-dark" type="text" name="title" placeholder="Enter title" value="{{ data.title }}" oninput="this.value = this.value.toUpperCase()" required>
                         </div>
                         <div class="mb-3">
                             <label class="col-form-label">Description <span class="text-danger">*</span></label>
-                            <textarea class="form-control f-w-900 text-dark" rows="8" name="description" placeholder="Enter project description" required>{{ data.description }}</textarea>
+                            <textarea class="form-control f-w-900 text-dark" rows="8" name="description" placeholder="Enter  description" required>{{ data.description }}</textarea>
                         </div>
-                        <div class="row">
-                            <div class="form-group col-6 mb-3">
-                                <label>Date of Coverage(Start)</label><span class="text-danger">*</span>
-                                <input type="date" class="form-control f-w-900 upper" name="start_date_coverage" id="start_date_coverage" value="{{ data.start_date_coverage }}" required>
-                            </div>
-                            <div class="form-group col-6 mb-3">
-                                <label>Date of Coverage(Start)</label><span class="text-danger">*</span>
-                                <input type="date" class="form-control f-w-900 upper" name="end_date_coverage" id="end_date_coverage" value="{{ data.end_date_coverage }}" required>
-                            </div>
+                        <div class="mb-3">
+                            <label class="col-form-label">Date of Coverage <span class="text-danger">*</span></label>
+                            <input class="form-control f-w-900 text-dark" type="text" name="date_of_coverage" placeholder="Enter date_of_coverage" value="{{ data.date_of_coverage }}" oninput="this.value = this.value.toUpperCase()" required>
                         </div>
                         <div class="row">
                             <div class="col-sm-4">
