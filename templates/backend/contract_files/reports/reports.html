@@ -2,9 +2,17 @@
 {% load static %}
 {% load tags %}
 {% block body %}
+
 <div class="row">
   <div class="col-xl-9 col-md-6 box-col-6">
       <div class="card">
+        <div class="card-header">
+          <div class="media">
+            <div class="media-body text-end">
+              <button class="btn btn-primary" type="btn" onClick="printDiv();"><i class="fa fa-print"></i> Print</button>
+            </div>
+          </div>
+        </div>
         <div class="card-body" id="libraryBody">
           <div class="layout-front">
             <table class="table table-bordered table-condensed">
@@ -76,18 +84,18 @@
                </div>
                <div class="collapse show" id="collapseOne" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                   <div class="card-body filter-cards-view animate-chk">
-                     <form hx-get="{% url 'backend-contract-files-page' action='filter'%}" hx-trigger="submit" hx-target="#libraryBody" hx-indicator="#spinner">
+                     <form hx-get="{% url 'backend-contract-files-page' action='filter-date'%}" hx-trigger="submit" hx-target="#" hx-indicator="#spinner">
                         {% csrf_token %}
                         <div class="job-filter mb-2">
                            <label>Start Date:</label>
                            <div class="faq-form">
-                            <input type="date" class="form-control" id="start-date">
+                            <input type="date" class="form-control" name="start_date" id="start-date">
                            </div>
                         </div>
                         <div class="job-filter mb-2">
                            <label>End Date:</label>
                            <div class="faq-form">
-                            <input type="date" class="form-control" id="end-date">
+                            <input type="date" class="form-control" name="end_date" id="end-date">
                            </div>
                         </div>
                          <br>
@@ -103,4 +111,23 @@
    </div>
 </div>
 
+{% endblock %}
+{% block script %}
+<script>
+    function printDiv(){
+
+      var divToPrint=document.getElementById('libraryBody');
+
+      var newWin=window.open('','Print-Window');
+
+      newWin.document.open();
+
+      newWin.document.write('<html><body onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
+
+      newWin.document.close();
+
+      setTimeout(function(){newWin.close();},10);
+
+    }
+</script>
 {% endblock %}

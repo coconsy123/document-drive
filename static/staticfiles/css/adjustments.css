@@ -22,7 +22,7 @@
 
 .form-control {
     font-size: 12px !important;
-    color: #2b2b2b;
+    color: #000000;
     padding: 10px 16px !important;
 }
 
@@ -60,11 +60,11 @@
 }
 
 .txt-default{
-    color: #2c323f !important;
+    color: #000000 !important;
 }
 
 hr{
-    border: 1px solid #b0bec5 !important;
+    border: 1px solid black !important;
 }
 
 .select{
