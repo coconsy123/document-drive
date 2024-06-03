@@ -16,6 +16,7 @@ from libraries.models import DocumentType,  CategoryType, DivisionType, SectionT
 from backend.models import ContractFiles, FileUpdate, AdditionalFile
 import os
 import urllib.parse
+from django.utils.dateparse import parse_date
 
 
 @login_required
@@ -310,9 +311,21 @@ def contract_files_reports(request,action=None, pk=None):
         'breadcrumbs': ['Generate Report'],
         'form': None,
         'keyword': None,
-        'data': ContractFiles.objects.all()
+        
     }
+
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
     
+
+    if start_date and end_date:
+        start_date = parse_date(start_date)
+        end_date = parse_date(end_date)
+        contract_files = ContractFiles.filter(date_created__range=(start_date, end_date))
+
+    contract_files = ContractFiles.objects.get(id=pk)
+    context['data'] = contract_files 
 
     return render(request, 'backend/contract_files/reports/reports.html', context )
 
