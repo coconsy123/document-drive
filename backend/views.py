@@ -156,6 +156,27 @@ def contract_files_page(request, action=None, pk=None):
                 context['keyword'] = "&".join(keyword)
                 return render(request, 'backend/contract_files/partial-file-upload.html', context)
             
+        
+        elif action == "generate-report":
+            if request.method == "GET":
+
+                start_date = request.GET.get('start_date')
+                end_date = request.GET.get('end_date')
+
+                contract_files = ContractFiles.objects.all()
+
+                if start_date and end_date:
+                    start_date = parse_date(start_date)
+                    end_date = parse_date(end_date)
+                    if start_date and end_date:
+                        contract_files = ContractFiles.filter(date_created__date__range=(start_date, end_date))
+
+                
+                context['data'] = contract_files
+
+                context['breadcrumbs'].append('generate-report')
+                return render(request, 'backend/contract_files/reports/reports.html', context )
+            
        
     elif action is not None and pk is not None:
         contract_files = ContractFiles.objects.get(id=pk)

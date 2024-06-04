@@ -11,10 +11,10 @@
             <div class="card-header">
                 <div class="media">
                   <div class="media-body text-end">
-                    <a class="btn btn-primary" href="{% url 'backend-contract-files-page' action='add' %}" role="button"><i data-feather="upload"></i>Add New</a>
+                    <a class="btn btn-primary" href="{% url 'backend-contract-files-page' action='add' %}" role="button"><i data-feather="upload"></i>Add New</a> <a class="btn btn-success" href="{% url 'backend-contract-files-page' action='generate-report' %}" role="button"><i data-feather="print"></i>Reports</a>
                   </div>
                 </div>
-              </div>
+            </div>
             <div class="card-body file-manager" id="libraryBody">
               {% include 'backend/contract_files/partial-file-upload.html' %}
             </div>

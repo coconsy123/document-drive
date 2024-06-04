@@ -13,7 +13,7 @@
             </div>
           </div>
         </div>
-        <div class="card-body" id="libraryBody">
+        <div class="card-body" id="generate-report">
           <div class="layout-front">
             <table class="table table-bordered table-condensed">
               <tr>
@@ -84,7 +84,7 @@
                </div>
                <div class="collapse show" id="collapseOne" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                   <div class="card-body filter-cards-view animate-chk">
-                     <form hx-get="{% url 'backend-contract-files-page' action='filter-date'%}" hx-trigger="submit" hx-target="#" hx-indicator="#spinner">
+                     <form hx-get="{% url 'backend-contract-files-page' action='generate-report'%}" hx-trigger="submit" hx-target="#generate-report" hx-indicator="#spinner">
                         {% csrf_token %}
                         <div class="job-filter mb-2">
                            <label>Start Date:</label>
