@@ -123,6 +123,9 @@ def contract_files_page(request, action=None, pk=None):
                 status = request.GET.get('status') if request.GET.get('status') != "None" and request.GET.get('status') != "" else None
                 year = int(request.GET.get('year')) if request.GET.get('year') and request.GET.get('year').isdigit() else None
 
+                start_date = request.GET.get('start_date')
+                end_date = request.GET.get('end_date')
+
                 queryset = ContractFiles.objects.filter(is_active=True)
 
                 if category_type_id:
@@ -140,6 +143,12 @@ def contract_files_page(request, action=None, pk=None):
                 if year:
                     queryset = queryset.filter(begin_date_completed__year=year)
 
+                if start_date and end_date:
+                    start_date = parse_date(start_date)
+                    end_date = parse_date(end_date)
+                    if start_date and end_date:
+                        queryset = queryset.filter(date_created__date__range=(start_date, end_date))
+
                 context['data'] = Paginator(queryset.order_by('-date_created'), 8).page(page_num)
 
                 keyword = []
@@ -153,13 +162,15 @@ def contract_files_page(request, action=None, pk=None):
                     keyword.append(f"status={status}")
                 if year:
                     keyword.append(f"year={year}")
+                if start_date and end_date:
+                    keyword.append(f"start_date={start_date}")
+                    keyword.append(f"end_date={end_date}")
                 context['keyword'] = "&".join(keyword)
                 return render(request, 'backend/contract_files/partial-file-upload.html', context)
             
         
         elif action == "generate-report":
             if request.method == "GET":
-
                 start_date = request.GET.get('start_date')
                 end_date = request.GET.get('end_date')
 
@@ -169,13 +180,14 @@ def contract_files_page(request, action=None, pk=None):
                     start_date = parse_date(start_date)
                     end_date = parse_date(end_date)
                     if start_date and end_date:
-                        contract_files = ContractFiles.filter(date_created__date__range=(start_date, end_date))
+                        contract_files = contract_files.filter(date_created__date__range=(start_date, end_date))
 
-                
                 context['data'] = contract_files
-
                 context['breadcrumbs'].append('generate-report')
-                return render(request, 'backend/contract_files/reports/reports.html', context )
+
+                return render(request, 'backend/contract_files/reports/reports.html', context)
+
+        return render(request, 'backend/contract_files/reports/reports.html', context)
             
        
     elif action is not None and pk is not None:
