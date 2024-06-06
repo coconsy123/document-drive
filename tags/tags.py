@@ -79,6 +79,13 @@ def date_converter(data):
     except Exception as e:
         return data
 
+@register.simple_tag
+def date_converter(data):
+    try:
+        if data:
+            return datetime.strptime(data, "%m/%d/%Y").strftime("%Y-%m-%d")
+    except Exception as e:
+        return data
 
 @register.simple_tag
 def get_by(user):
