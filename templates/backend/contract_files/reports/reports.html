@@ -89,7 +89,7 @@
                         <div class="job-filter mb-2">
                            <label>Start Date:</label>
                            <div class="faq-form">
-                            <input type="date" class="form-control" name="start_date" id="start_date">
+                            <input type="text" class="form-control" name="start_date" id="start_date">
                            </div>
                         </div>
                         <div class="job-filter mb-2">
@@ -114,6 +114,11 @@
 {% endblock %}
 {% block script %}
 <script>
+
+  $('#start_date').datetimepicker({
+    format: 'yyyy-mm-dd'
+  });
+
     function printDiv(){
 
       var divToPrint=document.getElementById('libraryBody');
