@@ -13,7 +13,7 @@
             </div>
           </div>
         </div>
-        <div class="card-body" id="generate-report">
+        <div class="card-body">
           <div class="layout-front">
             <table class="table table-bordered table-condensed">
               <tr>
@@ -51,16 +51,16 @@
                 </tr>
               </thead>
               <tbody>
-                {% for row in data %}
+                {% for contract in data %}
                   <tr>
-                    <td style="border: 1px solid black;">{{ row.title }}</td>
-                    <td style="text-align:center; border: 1px solid black;">{{ row.date_created }}</td>
-                    <td style="text-align:center; border: 1px solid black;">{{ row.section_type }}</td>
-                    <td style="text-align:center; border: 1px solid black;">{{ row.document_type_name }}</td>
-                    <td style="text-align:center; border: 1px solid black;">{{ row.date_of_coverage }}</td>
-                    <td style="border: 1px solid black;">{{ row.remarks }}</td>
+                    <td>{{ contract.title }}</td>
+                    <td>{{ contract.date_of_contract }}</td>
+                    <td>{{ contract.implementing_proponent }}</td>
+                    <td>{{ contract.type_of_contract }}</td>
+                    <td>{{ contract.date_of_coverage }}</td>
+                    <td>{{ contract.remarks }}</td>
                   </tr>
-                {% endfor %}
+                  {% endfor %}
               </tbody>
               <tfoot>
                 <tr>
@@ -84,20 +84,20 @@
                </div>
                <div class="collapse show" id="collapseOne" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                   <div class="card-body filter-cards-view animate-chk">
-                     <form hx-get="{% url 'backend-contract-files-page' action='generate-report'%}" hx-trigger="submit" hx-target="#generate-report" hx-indicator="#spinner">
+                    <form class="needs-validation" method="GET" action="{% url 'backend-contract-files-page' %}">
                         {% csrf_token %}
                         <div class="job-filter mb-2">
-                           <label>Start Date:</label>
-                           <div class="faq-form">
-                            <input type="text" class="form-control" name="start_date" id="start_date">
-                           </div>
-                        </div>
-                        <div class="job-filter mb-2">
-                           <label>End Date:</label>
-                           <div class="faq-form">
-                            <input type="date" class="form-control" name="end_date" id="end_date">
-                           </div>
-                        </div>
+                          <label>Start Date:</label>
+                          <div class="faq-form">
+                             <input type="date" class="form-control" name="start_date" id="start_date">
+                          </div>
+                       </div>
+                       <div class="job-filter mb-2">
+                          <label>End Date:</label>
+                          <div class="faq-form">
+                             <input type="date" class="form-control" name="end_date" id="end_date">
+                          </div>
+                       </div>
                          <br>
                         <div class="d-flex justify-content-end">
                            <button class="btn btn-primary text-center col-5" type="submit" >Generate Report</button>
@@ -115,9 +115,6 @@
 {% block script %}
 <script>
 
-  $('#start_date').datetimepicker({
-    format: 'yyyy-mm-dd'
-  });
 
     function printDiv(){
 

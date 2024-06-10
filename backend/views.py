@@ -122,10 +122,18 @@ def contract_files_page(request, action=None, pk=None):
                 section_type_id = request.GET.get('section_type') if request.GET.get('section_type') != "None" else None
                 status = request.GET.get('status') if request.GET.get('status') != "None" and request.GET.get('status') != "" else None
                 year = int(request.GET.get('year')) if request.GET.get('year') and request.GET.get('year').isdigit() else None
-
                 start_date = request.GET.get('start_date')
                 end_date = request.GET.get('end_date')
 
+                try:
+                    if start_date:
+                        start_date = datetime.strptime(start_date, "%Y-%m-%d")
+                    if end_date:
+                        end_date = datetime.strptime(end_date, "%Y-%m-%d")
+                except ValueError:
+                    start_date = None
+                    end_date = None
+                    
                 queryset = ContractFiles.objects.filter(is_active=True)
 
                 if category_type_id:
@@ -142,12 +150,13 @@ def contract_files_page(request, action=None, pk=None):
 
                 if year:
                     queryset = queryset.filter(begin_date_completed__year=year)
-
+                    
                 if start_date and end_date:
-                    start_date = parse_date(start_date)
-                    end_date = parse_date(end_date)
-                    if start_date and end_date:
-                        queryset = queryset.filter(date_created__date__range=(start_date, end_date))
+                    queryset = queryset.filter(date_created__range=[start_date, end_date])
+                elif start_date:
+                    queryset = queryset.filter(date_created__gte=start_date)
+                elif end_date:
+                    queryset = queryset.filter(date_created__lte=end_date)
 
                 context['data'] = Paginator(queryset.order_by('-date_created'), 8).page(page_num)
 
@@ -162,9 +171,10 @@ def contract_files_page(request, action=None, pk=None):
                     keyword.append(f"status={status}")
                 if year:
                     keyword.append(f"year={year}")
-                if start_date and end_date:
-                    keyword.append(f"start_date={start_date}")
-                    keyword.append(f"end_date={end_date}")
+                if start_date:
+                    keyword.append(f"start_date={start_date.strftime('%Y-%m-%d')}")
+                if end_date:
+                    keyword.append(f"end_date={end_date.strftime('%Y-%m-%d')}")
                 context['keyword'] = "&".join(keyword)
                 return render(request, 'backend/contract_files/partial-file-upload.html', context)
             
@@ -173,21 +183,34 @@ def contract_files_page(request, action=None, pk=None):
             if request.method == "GET":
                 start_date = request.GET.get('start_date')
                 end_date = request.GET.get('end_date')
-
-                contract_files = ContractFiles.objects.all()
+                
+                try:
+                    if start_date:
+                        start_date = datetime.strptime(start_date, "%Y-%m-%d")
+                    if end_date:
+                        end_date = datetime.strptime(end_date, "%Y-%m-%d")
+                except ValueError:
+                    start_date = None
+                    end_date = None
+                    
+                queryset = ContractFiles.objects.filter(is_active=True)
 
                 if start_date and end_date:
-                    start_date = parse_date(start_date)
-                    end_date = parse_date(end_date)
-                    if start_date and end_date:
-                        contract_files = contract_files.filter(date_created__date__range=(start_date, end_date))
+                    queryset = queryset.filter(date_created__range=[start_date, end_date])
+                elif start_date:
+                    queryset = queryset.filter(date_created__gte=start_date)
+                elif end_date:
+                    queryset = queryset.filter(date_created__lte=end_date)
+                    
+                context['data'] = Paginator(queryset.order_by('-date_created'), 8).page(page_num)
 
-                context['data'] = contract_files
-                context['breadcrumbs'].append('generate-report')
-
+                keyword = []
+                if start_date:
+                    keyword.append(f"start_date={start_date.strftime('%Y-%m-%d')}")
+                if end_date:
+                    keyword.append(f"end_date={end_date.strftime('%Y-%m-%d')}")
+                context['keyword'] = "&".join(keyword)
                 return render(request, 'backend/contract_files/reports/reports.html', context)
-
-        return render(request, 'backend/contract_files/reports/reports.html', context)
             
        
     elif action is not None and pk is not None:
@@ -347,18 +370,7 @@ def contract_files_reports(request,action=None, pk=None):
         
     }
 
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
-
     
-
-    if start_date and end_date:
-        start_date = parse_date(start_date)
-        end_date = parse_date(end_date)
-        contract_files = ContractFiles.filter(date_created__range=(start_date, end_date))
-
-    contract_files = ContractFiles.objects.get(id=pk)
-    context['data'] = contract_files 
 
     return render(request, 'backend/contract_files/reports/reports.html', context )
 
