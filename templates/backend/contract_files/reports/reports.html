@@ -13,63 +13,8 @@
             </div>
           </div>
         </div>
-        <div class="card-body">
-          <div class="layout-front">
-            <table class="table table-bordered table-condensed">
-              <tr>
-                  <th width="15%"><img src="{% static 'images/dswd.png' %}" width="90%"></th>
-                  <th width="15%"><img src="{% static 'images/bagong_pilipinas.png' %}" width="90%"></th>
-                  <th>
-                    <center>
-                    <h5 style="margin-right: 110px;"><strong>LEGAL SECTION<br>
-                      OFFICE OF THE REGIONAL DIRECTOR<br>
-                      FIELD OFFICE CARAGA</strong></h5>
-                      <p style="margin-right: 110px;">DSWD-GF-004 | REV 01 / 12 OCT 2021</p>
-                    <center>
-                  </th>
-              </tr>
-            </table>
-          </div>
-            <table class="table table-bordered">
-              <thead>
-                <tr style="border: 1px solid black;">
-                    <th colspan="6" style="border: 1px solid black;"><center><strong>MONITORING REPORT FOR CONTRACT</strong><center></th>
-                </tr>
-                <tr style="border: 1px solid black;">
-                  <th colspan="6" style="border: 1px solid black;"><center><strong>CALENDAR YEAR 2024</strong><center></th>
-                </tr>
-                <tr style="border: 1px solid black;">
-                  <th colspan="6" style="border: 1px solid black;"><strong>PROPONENTS OBSU</strong></th>
-                </tr>
-                <tr style="border: 1px solid black;">
-                  <th style="text-align:center; border: 1px solid black;"><strong>TITLE</strong></th>
-                  <th style="text-align:center; border: 1px solid black;"><strong>DATE OF CONTRACT</strong></th>
-                  <th style="text-align:center; border: 1px solid black;"><strong>IMPLEMENTING PROPONENT/OBSU</strong></th>
-                  <th style="text-align:center; border: 1px solid black;"><strong>TYPE OF CONTRACT</strong></th>
-                  <th style="text-align:center; border: 1px solid black;"><strong>DATE OF COVERAGE</strong></th>
-                  <th style="text-align:center; border: 1px solid black;"><strong>REMARKS</strong></th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for contract in data %}
-                  <tr>
-                    <td>{{ contract.title }}</td>
-                    <td>{{ contract.date_of_contract }}</td>
-                    <td>{{ contract.implementing_proponent }}</td>
-                    <td>{{ contract.type_of_contract }}</td>
-                    <td>{{ contract.date_of_coverage }}</td>
-                    <td>{{ contract.remarks }}</td>
-                  </tr>
-                  {% endfor %}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th style="border: 1px solid black;" colspan="2" contenteditable="true">Date: </th>
-                  <th style="border: 1px solid black;" colspan="2" contenteditable="true">Prepared By<br>Name: <strong>{{ request.user.full_name }}</strong><br>Designation: </th>
-                  <th style="border: 1px solid black;" colspan="2" contenteditable="true">Noted By<br>Name: <strong>{{ request.user.full_name }}</strong><br>Designation: </th>
-                </tr>
-              </tfoot>
-            </table>
+        <div class="card-body" id="libraryBody">
+          {% include 'backend/contract_files/reports/partial-reports.html' %}
         </div>
       </div>
     </div>
@@ -84,7 +29,7 @@
                </div>
                <div class="collapse show" id="collapseOne" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                   <div class="card-body filter-cards-view animate-chk">
-                    <form class="needs-validation" method="GET" action="{% url 'backend-contract-files-page' %}">
+                    <form hx-get="{% url 'backend-generate-report' action='generate-report'%}" hx-trigger="submit" hx-target="#libraryBody" hx-indicator="#spinner">
                         {% csrf_token %}
                         <div class="job-filter mb-2">
                           <label>Start Date:</label>

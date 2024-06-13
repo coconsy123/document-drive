@@ -178,40 +178,6 @@ def contract_files_page(request, action=None, pk=None):
                 context['keyword'] = "&".join(keyword)
                 return render(request, 'backend/contract_files/partial-file-upload.html', context)
             
-        
-        elif action == "generate-report":
-            if request.method == "GET":
-                start_date = request.GET.get('start_date')
-                end_date = request.GET.get('end_date')
-                
-                try:
-                    if start_date:
-                        start_date = datetime.strptime(start_date, "%Y-%m-%d")
-                    if end_date:
-                        end_date = datetime.strptime(end_date, "%Y-%m-%d")
-                except ValueError:
-                    start_date = None
-                    end_date = None
-                    
-                queryset = ContractFiles.objects.filter(is_active=True)
-
-                if start_date and end_date:
-                    queryset = queryset.filter(date_created__range=[start_date, end_date])
-                elif start_date:
-                    queryset = queryset.filter(date_created__gte=start_date)
-                elif end_date:
-                    queryset = queryset.filter(date_created__lte=end_date)
-                    
-                context['data'] = Paginator(queryset.order_by('-date_created'), 8).page(page_num)
-
-                keyword = []
-                if start_date:
-                    keyword.append(f"start_date={start_date.strftime('%Y-%m-%d')}")
-                if end_date:
-                    keyword.append(f"end_date={end_date.strftime('%Y-%m-%d')}")
-                context['keyword'] = "&".join(keyword)
-                return render(request, 'backend/contract_files/reports/reports.html', context)
-            
        
     elif action is not None and pk is not None:
         contract_files = ContractFiles.objects.get(id=pk)
@@ -369,9 +335,41 @@ def contract_files_reports(request,action=None, pk=None):
         'keyword': None,
         
     }
+    page_num = 1 if not request.GET.get('page') else request.GET.get('page')
+    if action == "generate-report":
+        if request.method == "GET":
+            start_date = request.GET.get('start_date')
+            end_date = request.GET.get('end_date')
+            
+            try:
+                if start_date:
+                    start_date = datetime.strptime(start_date, "%Y-%m-%d")
+                if end_date:
+                    end_date = datetime.strptime(end_date, "%Y-%m-%d")
+            except ValueError:
+                start_date = None
+                end_date = None
+                
+            queryset = ContractFiles.objects.filter(is_active=True)
 
-    
+            if start_date and end_date:
+                queryset = queryset.filter(date_created__range=[start_date, end_date])
+            elif start_date:
+                queryset = queryset.filter(date_created__gte=start_date)
+            elif end_date:
+                queryset = queryset.filter(date_created__lte=end_date)
+                
+            context['data'] = Paginator(queryset.order_by('-date_created'), 8).page(page_num)
 
+            keyword = []
+            if start_date:
+                keyword.append(f"start_date={start_date.strftime('%Y-%m-%d')}")
+            if end_date:
+                keyword.append(f"end_date={end_date.strftime('%Y-%m-%d')}")
+            context['keyword'] = "&".join(keyword)
+            return render(request, 'backend/contract_files/reports/reports.html', context)
+        
+    context['data'] = ContractFiles.objects.all()
     return render(request, 'backend/contract_files/reports/reports.html', context )
 
 def print(request):

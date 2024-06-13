@@ -24,9 +24,9 @@ urlpatterns = [
     path('case_files/<slug:action>', case_files_page, name='backend-case-files-page'),
     path('case_files/<slug:action>/<slug:pk>', case_files_page, name='backend-case-files-page'),
 
-    path('reports/', contract_files_reports, name='backend-reports-page'),
-    path('reports/<slug:action>', contract_files_reports, name='backend-reports-page'),
-    path('reports/<slug:action>/<slug:pk>', contract_files_reports, name='backend-reports-page'),
+    path('reports/', contract_files_reports, name='backend-generate-report'),
+    path('reports/<slug:action>', contract_files_reports, name='backend-generate-report'),
+    path('reports/<slug:action>/<slug:pk>', contract_files_reports, name='backend-generate-report'),
     path('print_report/', print, name='print-report'),
 
     path('system_logs/', system_logs, name='backend-system-logs-page'),
