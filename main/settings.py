@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'compressor',
     'api',
     'rest_framework',
+    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -180,4 +181,6 @@ if not DEBUG:
         }
     }
 
-
+# CAPTCHA
+RECAPTCHA_PUBLIC_KEY = '6LfKe_gpAAAAABdPdbb2QkdIJkV-J6dzIJgelCxQ'
+RECAPTCHA_PRIVATE_KEY = '6LfKe_gpAAAAAOxtpBkcpa4t26eUy8J7q-groRGl'
