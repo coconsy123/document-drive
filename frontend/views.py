@@ -11,6 +11,8 @@ from decorators.decorators import unauthenticated_user
 from frontend.models import Account
 from frontend.forms import RegistrationForm
 from frontend.utils import password_checker
+import requests
+from django.conf import settings
 
 @login_required
 def index_page(request):
@@ -29,7 +31,19 @@ def login_page(request):
     if request.method == "POST":
         email = request.POST.get('email')
         password = request.POST.get('password')
+        recaptcha_response = request.POST.get('g-recaptcha-response')
         account = Account.objects.filter(email=email).first()
+        # Verify reCAPTCHA
+        data = {
+            'secret': settings.RECAPTCHA_PRIVATE_KEY,
+            'response': recaptcha_response
+        }
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        result = r.json()
+
+        if not result.get('success'):
+            return JsonResponse({'error': True, 'msg': 'Invalid reCAPTCHA. Please try again.'})
+        
         if account:
             user = authenticate(email=email, password=password, request=request)
             if user:
@@ -40,7 +54,9 @@ def login_page(request):
                     {'error': True, 'msg': 'Wrong password. Try again'})
         else:
             return JsonResponse({'error': True, 'msg': "Couldn't find your account"})
-    return render(request, 'frontend/login/login.html')
+    return render(request, 'frontend/login/login.html', {
+        'recaptcha_site_key': settings.RECAPTCHA_PUBLIC_KEY
+    })
 
 @unauthenticated_user
 def register_page(request):

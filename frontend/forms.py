@@ -6,7 +6,6 @@ from django.core.exceptions import ValidationError
 from frontend.models import Account
 
 
-
 class RegistrationForm(UserCreationForm):
 
     email = forms.EmailField(max_length=255, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter email...'}))
@@ -15,7 +14,7 @@ class RegistrationForm(UserCreationForm):
     firstname = forms.CharField(max_length=255, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter first name...'}))
     middlename = forms.CharField(max_length=255, required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'required': False, 'placeholder': 'Enter middle name...'}))
     lastname = forms.CharField(max_length=255, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter last name...'}))
-
+  
 
     class Meta:
         model = Account
