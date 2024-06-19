@@ -1,56 +1,76 @@
-{% load tags %}
-<div id="masterlistBody table-responsive">
-   <div class="table-responsive">
-      <table class="table table-bordered table-hover table-condensed" id="masterlist-tbl">
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+   <button class="btn btn-primary no-print" onclick="printPartialReport()"><i class="fa fa-print"></i> Print</button>
+   <div id="partialReportContent">
+      <table class="table table-bordered table-condensed">
+         <tr>
+             <th width="15%"><img src="{% static 'images/dswd.png' %}" width="90%"></th>
+             <th width="15%"><img src="{% static 'images/bagong_pilipinas.png' %}" width="90%"></th>
+             <th>
+               <center>
+               <h5 style="margin-right: 110px;"><strong>LEGAL SECTION<br>
+                 OFFICE OF THE REGIONAL DIRECTOR<br>
+                 FIELD OFFICE CARAGA</strong></h5>
+                 <p style="margin-right: 110px;">DSWD-GF-004 | REV 01 / 12 OCT 2021</p>
+               <center>
+             </th>
+         </tr>
+       </table>
+      <table class="table table-bordered table-hover table-condensed">
          <thead>
-            <tr>
-                <th style="text-align:center;"><strong>TITLE</strong></th>
-                <th style="text-align:center;"><strong>DATE OF CONTRACT</strong></th>
-                <th style="text-align:center;"><strong>IMPLEMENTING PROPONENT/OBSU</strong></th>
-                <th style="text-align:center;"><strong>TYPE OF CONTRACT</strong></th>
-                <th style="text-align:center;"><strong>DATE OF COVERAGE</strong></th>
-                <th style="text-align:center;"><strong>REMARKS</strong></th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for contract in data %}
-                <tr>
-                  <td>{{ contract.title }}</td>
-                  <td>{{ contract.date_created }}</td>
-                  <td>{{ contract.division_type }}</td>
-                  <td>{{ contract.document_type_name }}</td>
-                  <td>{{ contract.date_of_coverage }}</td>
-                  <td>{{ contract.remarks }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
+               <tr>
+                  <th style="text-align:center;"><strong>TITLE</strong></th>
+                  <th style="text-align:center;"><strong>DATE OF CONTRACT</strong></th>
+                  <th style="text-align:center;"><strong>IMPLEMENTING PROPONENT/OBSU</strong></th>
+                  <th style="text-align:center;"><strong>TYPE OF CONTRACT</strong></th>
+                  <th style="text-align:center;"><strong>DATE OF COVERAGE</strong></th>
+                  <th style="text-align:center;"><strong>REMARKS</strong></th>
+               </tr>
+         </thead>
+         <tbody>
+               {% if data %}
+                  {% for contract in data %}
+                     <tr>
+                           <td>{{ contract.title }}</td>
+                           <td>{{ contract.date_created }}</td>
+                           <td>{{ contract.division_type }}</td>
+                           <td>{{ contract.document_type_name }}</td>
+                           <td>{{ contract.date_of_coverage }}</td>
+                           <td>{{ contract.remarks }}</td>
+                     </tr>
+                  {% endfor %}
+               {% else %}
+                  <tr>
+                     <td colspan="6" style="text-align:center;">No results found for the given filter.</td>
+                  </tr>
+               {% endif %}
+         </tbody>
       </table>
    </div>
-   <div class="d-flex justify-content-between">
-      <label class="mt-3">{% if data %} Showing {{ data.start_index }} - {{ data.end_index }} of {{ data.paginator.count }} entr{{ data.paginator.count|pluralize:"y,ies" }} {% else %} No entry {% endif %}</label>
-      <ul class="pagination pagination-primary mt-2 d-flex justify-content-end">
-         <span class="m-2"><i class="fa fa-spin fa-spinner f-20 htmx-indicator" id="spinner"></i></span>
-         <li class="page-item">
-            <a class="page-link {% if not data.has_previous %} disabled {% else %} cursor-pointer {% endif %}"
-               {% if data.has_previous %}
-                     hx-get="{% url 'backend-masterlist-page' action='filter' %}?{% if keyword %}{{keyword}}{% endif %}&page={{ data.previous_page_number }}"
-                     hx-trigger="click"
-                     hx-target="#masterlist-body"
-                     hx-swap="innerHTML"
-                     hx-indicator="#spinner"
-               {% endif %}>Previous
-            </a>
-         </li>
-         <li class="page-item">
-            <a class="page-link {% if not data.has_next %} disabled {% else %} cursor-pointer {% endif %}"
-               {% if data.has_next %}
-                     hx-get="{% url 'backend-masterlist-page' action='filter' %}?{% if keyword %}{{keyword}}{% endif %}&page={{ data.next_page_number }}"
-                     hx-trigger="click"
-                     hx-target="#masterlist-body"
-                     hx-swap="innerHTML"
-                     hx-indicator="#spinner"
-               {% endif %}>Next
-            </a></li>
-      </ul>
-   </div>
-</div>
+
+
+   <script>
+   function printPartialReport() {
+      const content = document.getElementById('partialReportContent').outerHTML;
+      const printWindow = window.open('', '', 'height=800,width=1000');
+      printWindow.document.write('<html><head><title>Print Report</title>');
+      printWindow.document.write('<style>');
+      printWindow.document.write('@media print { @page { size: A4 landscape; margin: 20mm; } body { margin: 0; padding: 0; width: 100%; } .card-body { width: 100%; } .table { width: 100%; border-collapse: collapse; } .table th, .table td { border: 1px solid black; padding: 8px; text-align: center; } }');
+      printWindow.document.write('</style>');
+      printWindow.document.write('</head><body >');
+      printWindow.document.write(content);
+      printWindow.document.write('</body></html>');
+      printWindow.document.close();
+      printWindow.print();
+   }
+   </script>
+</body>
+</html>
