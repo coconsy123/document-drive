@@ -1,4 +1,5 @@
 {% load static %}
+{% load tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,9 +9,12 @@
 </head>
 
 <body>
-   <button class="btn btn-primary no-print" onclick="printPartialReport()"><i class="fa fa-print"></i> Print</button>
+   <div class="media-body text-end">
+      <button class="btn btn-primary no-print" onclick="printPartialReport()"><i class="fa fa-print"></i> Print</button>
+   </div>
+   <br>
    <div id="partialReportContent">
-      <table class="table table-bordered table-condensed">
+      <table class="table">
          <tr>
              <th width="15%"><img src="{% static 'images/dswd.png' %}" width="90%"></th>
              <th width="15%"><img src="{% static 'images/bagong_pilipinas.png' %}" width="90%"></th>
@@ -27,24 +31,24 @@
       <table class="table table-bordered table-hover table-condensed">
          <thead>
                <tr>
-                  <th style="text-align:center;"><strong>TITLE</strong></th>
-                  <th style="text-align:center;"><strong>DATE OF CONTRACT</strong></th>
-                  <th style="text-align:center;"><strong>IMPLEMENTING PROPONENT/OBSU</strong></th>
-                  <th style="text-align:center;"><strong>TYPE OF CONTRACT</strong></th>
-                  <th style="text-align:center;"><strong>DATE OF COVERAGE</strong></th>
-                  <th style="text-align:center;"><strong>REMARKS</strong></th>
+                  <th style="text-align:center; border: 1px solid black;"><strong>TITLE</strong></th>
+                  <th style="text-align:center; border: 1px solid black;"><strong>DATE OF CONTRACT</strong></th>
+                  <th style="text-align:center; border: 1px solid black;"><strong>IMPLEMENTING PROPONENT/OBSU</strong></th>
+                  <th style="text-align:center; border: 1px solid black;"><strong>TYPE OF CONTRACT</strong></th>
+                  <th style="text-align:center; border: 1px solid black;"><strong>DATE OF COVERAGE</strong></th>
+                  <th style="text-align:center; border: 1px solid black;"><strong>REMARKS</strong></th>
                </tr>
          </thead>
          <tbody>
                {% if data %}
                   {% for contract in data %}
                      <tr>
-                           <td>{{ contract.title }}</td>
-                           <td>{{ contract.date_created }}</td>
-                           <td>{{ contract.division_type }}</td>
-                           <td>{{ contract.document_type_name }}</td>
-                           <td>{{ contract.date_of_coverage }}</td>
-                           <td>{{ contract.remarks }}</td>
+                           <td style="border: 1px solid black;">{{ contract.title }}</td>
+                           <td style="border: 1px solid black;">{{ contract.date_created }}</td>
+                           <td style="border: 1px solid black;">{{ contract.division_type }}</td>
+                           <td style="border: 1px solid black;">{{ contract.document_type_name }}</td>
+                           <td style="border: 1px solid black;">{{ contract.date_of_coverage }}</td>
+                           <td style="border: 1px solid black;">{{ contract.remarks }}</td>
                      </tr>
                   {% endfor %}
                {% else %}
@@ -53,17 +57,22 @@
                   </tr>
                {% endif %}
          </tbody>
+         
+            <tr>
+              <th style="text-align:left; border: 1px solid black;" colspan="2" contenteditable="true">Date: </th>
+              <th style="text-align:left; border: 1px solid black;" colspan="2" contenteditable="true">Prepared By<br>Name: <strong>{{ request.user.full_name }}</strong><br>Designation: </th>
+              <th style="text-align:left; border: 1px solid black;" colspan="2" contenteditable="true">Noted By<br>Name: <strong>{{ request.user.full_name }}</strong><br>Designation: </th>
+            </tr>
+          
       </table>
    </div>
-
-
    <script>
    function printPartialReport() {
       const content = document.getElementById('partialReportContent').outerHTML;
       const printWindow = window.open('', '', 'height=800,width=1000');
       printWindow.document.write('<html><head><title>Print Report</title>');
       printWindow.document.write('<style>');
-      printWindow.document.write('@media print { @page { size: A4 landscape; margin: 20mm; } body { margin: 0; padding: 0; width: 100%; } .card-body { width: 100%; } .table { width: 100%; border-collapse: collapse; } .table th, .table td { border: 1px solid black; padding: 8px; text-align: center; } }');
+      printWindow.document.write('@media print { @page { size: A4 landscape; margin: 20mm; } body { margin: 0; padding: 0; width: 100%; } .card-body { width: 100%; } .table { width: 100%; border-collapse: collapse; } .table th, .table td { border: 1px solid black; padding: 4px; text-align: center; } }');
       printWindow.document.write('</style>');
       printWindow.document.write('</head><body >');
       printWindow.document.write(content);

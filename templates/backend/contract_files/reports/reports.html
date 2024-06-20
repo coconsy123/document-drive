@@ -6,13 +6,6 @@
 <div class="row">
   <div class="col-xl-9 col-md-6 box-col-6">
       <div class="card">
-        <div class="card-header">
-          <div class="media">
-            <div class="media-body text-end">
-              <button class="btn btn-primary" type="btn"><i class="fa fa-print"></i> Print</button>
-            </div>
-          </div>
-        </div>
         <div class="card-body" id="libraryBody">
           {% if data %}
             {% include 'backend/contract_files/reports/partial-reports.html' %}
@@ -62,12 +55,3 @@
 
 {% endblock %}
 
-{% block script %}
-<script>
-   function printContent() {
-     window.print();
-   }
- 
-   document.querySelector('.btn.btn-primary').addEventListener('click', printContent);
- </script>
-{% endblock %}
