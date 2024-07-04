@@ -71,7 +71,6 @@ class DivisionType(models.Model):
         db_table = 'tbl_divisiontype'
 
 
-
 class CaseCategory(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
@@ -87,4 +86,20 @@ class CaseCategory(models.Model):
     class Meta:
         managed = False
         db_table = 'tbl_casecategory'
+
+class CaseNature(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+    created_by = models.ForeignKey(Account, models.RESTRICT, related_name="case_nature_created_by")
+    date_created = models.DateTimeField(auto_now_add=True)
+    updated_by = models.ForeignKey(Account, models.RESTRICT, related_name="case_nature_updated_by", null=True)
+    date_updated = models.DateTimeField(auto_now_add=False, null=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        managed = False
+        db_table = 'tbl_casenature'
 

@@ -8,7 +8,29 @@ from datetime import timedelta
 
 # Create your models here.
 
-
+class CaseFiles(models.Model):
+    CASE_STATUS_CHOICES = [
+        ('Sample1', 'Sample1'),
+        ('Sample2', 'Sample2'),
+        ('Sample3', 'Sample3'),
+        ('Sample4', 'Sample4'),
+    ]
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    title = models.CharField(max_length=255)
+    date_case_filed = models.DateTimeField(null=True, blank=True)
+    date_case_received = models.DateTimeField(null=True, blank=True)
+    case_category = models.ForeignKey(CaseCategory, models.SET_NULL, null=True)
+    case_nature = models.ForeignKey(CaseNature, models.SET_NULL, null=True)
+    case_status = models.CharField(max_length=255, choices=CASE_STATUS_CHOICES)
+    others = models.TextField()
+    amount = models.FloatField()
+    others = models.CharField(max_length=255)
+    date_returned = models.DateTimeField(null=True, blank=True)
+    date_removed = models.DateTimeField(null=True, blank=True)
+    reason = models.CharField(max_length=255)
+    details = models.TextField()
+    
+    
 class ContractFiles(models.Model):
     FILE_STATUS_CHOICES = [
         ('Pending', 'Pending'),
@@ -32,8 +54,6 @@ class ContractFiles(models.Model):
     remarks = models.TextField()
     date_of_coverage = models.CharField(max_length=255)
     
-    
-
     def is_archivable(self):
         """Check if 1 minute has passed since the file was completed."""
         if self.status != "Completed" or not self.begin_date_completed:
