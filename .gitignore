@@ -5,3 +5,4 @@ __pycache__
 venv
 CACHE
 documents
+settings.py
