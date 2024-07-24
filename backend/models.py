@@ -22,13 +22,18 @@ class CaseFiles(models.Model):
     case_category = models.ForeignKey(CaseCategory, models.SET_NULL, null=True)
     case_nature = models.ForeignKey(CaseNature, models.SET_NULL, null=True)
     case_status = models.CharField(max_length=255, choices=CASE_STATUS_CHOICES)
-    others = models.TextField()
-    amount = models.FloatField()
     others = models.CharField(max_length=255)
+    amount = models.CharField(max_length=255)
+    weight_in_grams = models.CharField(max_length=255)
     date_returned = models.DateTimeField(null=True, blank=True)
     date_removed = models.DateTimeField(null=True, blank=True)
     reason = models.CharField(max_length=255)
     details = models.TextField()
+    
+    class Meta:
+        managed = False
+        db_table = 'tbl_casefiles'
+        
     
     
 class ContractFiles(models.Model):
