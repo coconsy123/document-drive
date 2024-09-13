@@ -53,7 +53,7 @@
     </div>
   </div>
   
-  <div class="col-8 project-list">
+  <div class="col-12 project-list">
     <div class="card">
         <br>
         <div class="card-body">
@@ -67,6 +67,7 @@
                         <th class="fw-bold text-uppercase">Section</th>
                         <th class="fw-bold text-uppercase">Category Type</th>
                         <th class="fw-bold text-uppercase">Date Added</th>
+                        <th class="fw-bold text-uppercase">Files</th>
                         <th class="fw-bold text-uppercase">Status</th>
                         
                     </thead>
@@ -78,30 +79,7 @@
         </div>
     </div>
   </div>
-    <div class="col-xl-4 col-lg-12 box-col-12">
-    <div>
-      <div class="card">
-        <div class="card-header">
-          <h5 class="text-uppercase">Recent Activity</h5>
-          <div class="card-header-right">
-            <ul class="list-unstyled card-option">
-              <li><i class="fa fa-spin fa-cog"></i></li>
-              <li><i class="view-html fa fa-code"></i></li>
-              <li><i class="icofont icofont-maximize full-card"></i></li>
-              <li><i class="icofont icofont-minus minimize-card"></i></li>
-              <li><i class="icofont icofont-refresh reload-card"></i></li>
-              <li><i class="icofont icofont-error close-card"></i></li>
-            </ul>
-          </div>
-        </div>
-        <div class="card-body">
-          <ul class="crm-activity" id="RecentActivity">
-            {% include 'backend/contract_files/dashboard/partial-dashboard.html' %}
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
+  
 </div>
 {% endblock %}
 {% block script %}
@@ -138,6 +116,20 @@
             {'data': 'section_type_name', 'sortable': false, 'searchable': false},
             {'data': 'category_type_name', 'sortable': false, 'searchable': false},
             {'data': 'date_created', 'sortable': false, 'searchable': false},
+            {
+              'data': 'file_directories',
+              'render': function(data, type, row, meta) {
+                  if (data && data.length > 0) {
+                      return data.map(function(file) {
+                          // Extract the filename from the file path
+                          var filename = file.split('/').pop();  // This gets the last part of the file path (the filename)
+                          return `<a href="${file}" target="_blank">${filename}</a>`;
+                      }).join(', ');
+                  } else {
+                      return 'No PDFs';
+                  }
+              }
+          },
             {'data': 'status_color', 'sortable': false, 'searchable': false},
   
         ],

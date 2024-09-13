@@ -1,7 +1,7 @@
 from rest_framework import generics, filters
 from rest_framework.permissions import IsAuthenticated
-from backend.models import ContractFiles
-from api.serializers import ContractFilesSerializer
+from backend.models import ContractFiles, AdditionalFile
+from api.serializers import ContractFilesSerializer, AdditionalFileSerializer
 
 
 
@@ -22,4 +22,9 @@ class ContractFilesViews(generics.ListAPIView):
             queryset = queryset.filter(section_type__id=section_id)
         return queryset.order_by('-id')
     
+class PDFFileListView(generics.ListAPIView):
+    serializer_class = AdditionalFileSerializer
     
+    def get_queryset(self):
+        # Filter AdditionalFile objects where file_directory ends with ".pdf"
+        return AdditionalFile.objects.filter(file_directory__iendswith='.pdf', is_active=True)    

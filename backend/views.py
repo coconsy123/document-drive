@@ -19,6 +19,7 @@ import urllib.parse
 from django.utils.dateparse import parse_date
 
 
+
 @login_required
 def contract_files_dashboard(request, action=None, pk=None):
     context = {
@@ -100,6 +101,7 @@ def contract_files_page(request, action=None, pk=None):
                                                                         file_directory=fs.url(name),
                                                                         created_by=request.user)
                         file_update = FileUpdate.objects.create(title=f"{contract_files.title}", remarks="file has been added by", created_by=request.user)
+                        
                         
                     context['breadcrumbs'].append('Add')
                     return JsonResponse({'statusMsg': 'Success'}, status=200)
