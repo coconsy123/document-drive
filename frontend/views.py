@@ -14,6 +14,7 @@ from frontend.utils import password_checker
 import requests
 from django.conf import settings
 
+
 @login_required
 def index_page(request):
     try:
@@ -48,12 +49,12 @@ def login_page(request):
             user = authenticate(email=email, password=password, request=request)
             if user:
                 login(request, user)
-                return JsonResponse({'data': 'success'})
+                return JsonResponse({'data': 'success'})  # Return token in response
             else:
-                return JsonResponse(
-                    {'error': True, 'msg': 'Wrong password. Try again'})
+                return JsonResponse({'error': True, 'msg': 'Wrong password. Try again'})
         else:
             return JsonResponse({'error': True, 'msg': "Couldn't find your account"})
+    
     return render(request, 'frontend/login/login.html', {
         'recaptcha_site_key': settings.RECAPTCHA_PUBLIC_KEY
     })
